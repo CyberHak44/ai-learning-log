@@ -17,7 +17,7 @@ Each subject is a working paper. I take a position, Polly, my AI assistant, chal
 
 | Subject | The question | Status |
 | --- | --- | --- |
-| [AI guardrails](topics/01-ai-guardrails.md) | What stops an AI tool leaking data, being tricked, or doing something nobody intended? | Framework |
+| [AI guardrails](topics/01-ai-guardrails.md) | What stops an AI tool leaking data, being tricked, or doing something nobody intended? | Round 1 done |
 | [Agentic AI and human oversight](topics/02-agentic-ai-and-human-oversight.md) | When AI takes actions on its own, where must a person step in? | Framework |
 | [The AI tools compared](topics/03-ai-tools-compared.md) | Polly (my AI assistant), Cursor, Grok, Gemini, Copilot: which tool for which job, and where does the data go? | Framework |
 | [AI as a force multiplier](topics/04-ai-as-a-force-multiplier.md) | Where does AI really let one person do the work of several? | Framework |
@@ -55,6 +55,7 @@ Also built: [grc-workbench](https://github.com/CyberHak44/grc-workbench), a brow
 | 2026-11-02 | Docker, Gordon and local AI | Images vs containers, ports and volumes, Compose for multi-part services, least-privilege tool access through the MCP Toolkit, and running models locally | Study notes |
 | 2026-11-02 | Web data and the law | How proxies and scraping APIs work, and where the UAE PDPL draws the line: no "legitimate interests" basis, so no harvesting personal data | Study notes |
 | 2026-11-03 | AI guardrails and agentic AI | Started five working papers: guardrails, human oversight of AI agents, the main AI tools, AI as a force multiplier, and AI governance frameworks | [topics](topics/) |
+| 2026-11-03 | AI guardrails, round 1 | Authorisation beats content filtering; AI preps, people act. Jurisdiction follows where people are and where you trade, not nationality | [01-ai-guardrails](topics/01-ai-guardrails.md) |
 
 ## Author
 
