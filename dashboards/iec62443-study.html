@@ -1,0 +1,468 @@
+<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>IEC 62443 Study Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<!-- IE-DRILL-005 v3.0 Study tab (was IE-DRILL-006 v1.0) | IEC 62443 Study Room | Issued 2026-10-30 | Owner: Hakim Bilal | Source: IE-STUDY-001 v1.1, IE-REP-004 crosswalk | Register: IE-REG-001 -->
+<style>
+/* Layout: one study column with a sticky step rail on wide screens; each step = plain words, one diagram, one building example, one check. */
+:root{
+  --bg:#F2F2EC; --panel:#FFFFFF; --ink:#0A0B0A; --body:#2F332E; --muted:#5F655D; --line:#DCDCD4;
+  --accent:#7FB928; --accent-ink:#48651F; --accent-soft:#EEF6E2; --amber:#B9801A; --amber-soft:#FBF1DF; --red:#C23B3B; --red-soft:#FBE9E9;
+  --zone-it:#DCE7F0; --zone-bms:#E4F0D2; --zone-cctv:#EFE6D2; --zone-av:#E9E2F0; --zone-wifi:#F3DFDF; --zone-acc:#DCEEEA;
+  --display:"Inter",Calibri,Arial,sans-serif; --mono:"JetBrains Mono",Consolas,"Courier New",monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0A0B0A; --panel:#101211; --ink:#F2F2EC; --body:#D9D6CA; --muted:#8C9289; --line:#262A26;
+  --accent:#7FB928; --accent-ink:#96D71A; --accent-soft:#1A2410; --amber:#D99B28; --amber-soft:#2A2010; --red:#E06666; --red-soft:#2B1414;
+  --zone-it:#1C2732; --zone-bms:#1E2A14; --zone-cctv:#2B2416; --zone-av:#251E2D; --zone-wifi:#2D1A1A; --zone-acc:#14282A; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0A0B0A; --panel:#101211; --ink:#F2F2EC; --body:#D9D6CA; --muted:#8C9289; --line:#262A26;
+  --accent:#7FB928; --accent-ink:#96D71A; --accent-soft:#1A2410; --amber:#D99B28; --amber-soft:#2A2010; --red:#E06666; --red-soft:#2B1414;
+  --zone-it:#1C2732; --zone-bms:#1E2A14; --zone-cctv:#2B2416; --zone-av:#251E2D; --zone-wifi:#2D1A1A; --zone-acc:#14282A; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--body);font-family:var(--display);font-size:16.5px;line-height:1.6}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 64px}
+h1,h2,h3{color:var(--ink);margin:0;text-wrap:balance}
+h1{font-size:clamp(28px,4.4vw,42px);font-weight:800;letter-spacing:-.025em;line-height:1.08}
+h2{font-size:clamp(22px,2.8vw,28px);font-weight:800;letter-spacing:-.02em;line-height:1.15}
+h3{font-size:17px;font-weight:700}
+p{margin:0}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.wordmark{font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--accent-ink)}
+.lede{max-width:62ch;margin-top:10px;color:var(--body)}
+button{font:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,.zone:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+a{color:var(--accent-ink)}
+
+/* top summary */
+.top{display:grid;grid-template-columns:1.3fr 1fr;gap:24px;align-items:end;margin-top:6px}
+.prog{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.prog .row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.prog .big{font-family:var(--mono);font-size:30px;font-weight:600;color:var(--ink)}
+.bar{height:10px;border-radius:99px;background:var(--line);margin-top:10px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent);border-radius:99px;transition:width .3s}
+.prog small{display:block;margin-top:8px;color:var(--muted);font-size:13.5px}
+
+/* plan timeline */
+.plan{margin-top:24px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.slot{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:4px}
+.slot .t{font-family:var(--mono);font-size:12.5px;color:var(--accent-ink);font-weight:600}
+.slot b{color:var(--ink);font-size:15px}
+.slot span{font-size:13.5px;color:var(--muted)}
+.slot:hover{border-color:var(--accent)}
+
+/* layout */
+.grid{display:grid;grid-template-columns:210px 1fr;gap:32px;margin-top:36px;align-items:start}
+.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);display:flex;flex-direction:column;gap:4px}
+.rail a{display:flex;gap:10px;align-items:center;padding:8px 10px;border-radius:8px;text-decoration:none;color:var(--body);font-size:14.5px}
+.rail a:hover{background:var(--panel)}
+.rail .dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-family:var(--mono);font-size:10.5px;color:var(--muted);flex:0 0 auto}
+.rail a.done .dot{background:var(--accent);border-color:var(--accent);color:#0A0B0A}
+.steps{display:flex;flex-direction:column;gap:28px;min-width:0}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:26px 26px 22px;scroll-margin-top:16px;min-width:0}
+.step .k{font-family:var(--mono);font-size:12.5px;color:var(--accent-ink);font-weight:600;letter-spacing:.06em}
+.step h2{margin-top:6px}
+.step .why{margin-top:10px;max-width:68ch}
+.analogy{margin-top:16px;display:flex;gap:14px;background:var(--accent-soft);border-radius:12px;padding:14px 16px}
+.analogy b{color:var(--ink)}
+.analogy .lbl{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent-ink);white-space:nowrap;padding-top:3px}
+.fig{margin-top:18px;overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--bg);padding:14px}
+.fig svg{display:block;width:100%;min-width:620px;height:auto}
+.fig svg text{font-family:var(--display)}
+.cap{font-size:13.5px;color:var(--muted);margin-top:8px}
+.say{margin-top:16px;border-left:3px solid var(--accent);padding:4px 0 4px 14px}
+.say .lbl{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.say p{margin-top:4px;color:var(--ink)}
+.donebtn{margin-top:20px;display:inline-flex;gap:10px;align-items:center;border:1.5px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:9px 16px;font-weight:600;font-size:14.5px}
+.donebtn .box{width:18px;height:18px;border-radius:5px;border:2px solid var(--muted);display:grid;place-items:center}
+.donebtn[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.donebtn[aria-pressed="true"] .box{background:var(--accent);border-color:var(--accent)}
+.donebtn[aria-pressed="true"] .box::after{content:"";width:8px;height:4px;border-left:2px solid #0A0B0A;border-bottom:2px solid #0A0B0A;transform:rotate(-45deg) translate(1px,-1px)}
+
+/* tables and chips */
+.tbl{margin-top:16px;overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{width:100%;border-collapse:collapse;font-size:14.5px;min-width:560px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--ink);color:var(--bg);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700}
+tr:last-child td{border-bottom:0}
+td.code{font-family:var(--mono);white-space:nowrap;color:var(--ink);font-weight:600}
+.pill{display:inline-block;white-space:nowrap;border-radius:999px;padding:1px 9px;font-size:12px;font-weight:600}
+.p-cov{background:var(--accent-soft);color:var(--accent-ink)}
+.p-par{background:var(--amber-soft);color:var(--amber)}
+.p-gap{background:var(--red-soft);color:var(--red)}
+
+/* zone explorer */
+.zone{cursor:pointer}
+.zone rect{stroke:var(--line);stroke-width:1.5}
+.zone.sel rect{stroke:var(--accent);stroke-width:3}
+.info{margin-top:12px;display:grid;grid-template-columns:auto 1fr;gap:6px 16px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:15px}
+.info .h{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding-top:2px}
+.info .v{color:var(--ink)}
+
+/* FR cards */
+.frs{margin-top:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.fr{border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;background:var(--bg)}
+.fr .n{font-family:var(--mono);font-size:12.5px;color:var(--accent-ink);font-weight:600}
+.fr b{color:var(--ink)}
+.fr .ex{font-size:14px}
+.fr .row{display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--muted);margin-top:auto}
+
+/* quiz */
+.q{border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:12px;background:var(--bg)}
+.q .qt{color:var(--ink);font-weight:600}
+.opts{display:grid;gap:8px;margin-top:10px}
+.opts button{text-align:left;border:1.5px solid var(--line);background:var(--panel);color:var(--body);border-radius:10px;padding:9px 12px;font-size:15px}
+.opts button:hover{border-color:var(--muted)}
+.opts button.right{border-color:var(--accent);background:var(--accent-soft);color:var(--ink)}
+.opts button.wrong{border-color:var(--red);background:var(--red-soft)}
+.fb{margin-top:10px;font-size:14.5px}
+.fb b{color:var(--ink)}
+.score{font-family:var(--mono);color:var(--ink);font-weight:600}
+.reset{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:8px;padding:6px 12px;font-size:13.5px}
+.fine{margin-top:28px;font-size:13px;color:var(--muted);max-width:90ch}
+
+@media (max-width:900px){.grid{grid-template-columns:1fr}.rail{display:none}.top{grid-template-columns:1fr}.plan{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.plan{grid-template-columns:1fr}.step{padding:20px 16px}.analogy{flex-direction:column;gap:4px}.info{grid-template-columns:1fr}}
+@media (max-width:660px){.fig::before{content:"Swipe sideways to see the whole diagram";display:block;font-size:12.5px;color:var(--muted);margin-bottom:8px;position:sticky;left:0}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<div class="wrap">
+  <div class="wordmark">Intelligent Environments</div>
+  <div class="top">
+    <div>
+      <h1>IEC 62443 Study Room</h1>
+      <p class="lede">The security standard for the control systems that run buildings, plants and infrastructure. Seven steps, one idea at a time. Each step has plain words, one diagram, one building you know, and one line to say out loud. Tick a step when you can explain it without looking.</p>
+    </div>
+    <div class="prog" aria-live="polite">
+      <div class="row"><span>Your progress</span><span class="big" id="pnum">0/7</span></div>
+      <div class="bar"><i id="pbar"></i></div>
+      <small id="pnote">Saved in this browser. Start with step 1.</small>
+    </div>
+  </div>
+
+  <div class="plan" aria-label="Today's 90 minutes">
+    <a class="slot" href="#s1"><span class="t">0 to 20 min</span><b>Steps 1 and 2</b><span>The big picture and who each part is for</span></a>
+    <a class="slot" href="#s3"><span class="t">20 to 45 min</span><b>Steps 3 and 4</b><span>Zones, conduits and security levels</span></a>
+    <a class="slot" href="#s5"><span class="t">45 to 70 min</span><b>Steps 5 and 6</b><span>The seven requirements and the risk workflow</span></a>
+    <a class="slot" href="#s8"><span class="t">70 to 90 min</span><b>Step 7 and self-test</b><span>Where ISO 27001 falls short, then 7 questions</span></a>
+  </div>
+
+  <div class="grid">
+    <nav class="rail" aria-label="Steps" id="rail"></nav>
+    <main class="steps">
+
+      <!-- STEP 1 -->
+      <section class="step" id="s1" data-step="1">
+        <div class="k">STEP 1 OF 7 · THE BIG PICTURE</div>
+        <h2>What is IEC 62443, in one picture?</h2>
+        <p class="why">IT security protects information. Control system security protects things that move, heat, cool, open and stop. A hacked laptop leaks data. A hacked BMS can turn off cooling to a data room or unlock a fire exit. IEC 62443 is the rulebook for securing those control systems. The standard calls them IACS: industrial automation and control systems. In a building, that means BMS, lighting control, CCTV, access control, AV and lift gateways.</p>
+        <div class="analogy"><span class="lbl">Think of it as</span><p>Fire safety for networks. A building is split into <b>fire compartments</b> so a fire in one room cannot spread to the whole floor. IEC 62443 splits a control network into <b>zones</b> so an attack in one system cannot spread to the rest.</p></div>
+        <div class="fig">
+          <svg viewBox="0 0 760 210" role="img" aria-label="IT security protects information; OT security protects physical processes">
+            <rect x="10" y="20" width="340" height="170" rx="14" fill="var(--zone-it)"/>
+            <text x="30" y="52" font-size="13" font-weight="700" fill="var(--muted)" letter-spacing="1.5">IT SECURITY (ISO 27001)</text>
+            <text x="30" y="84" font-size="19" font-weight="800" fill="var(--ink)">Protects information</text>
+            <text x="30" y="114" font-size="15" fill="var(--body)">Email, files, finance systems</text>
+            <text x="30" y="140" font-size="15" fill="var(--body)">Worst case: data stolen or locked</text>
+            <text x="30" y="166" font-size="15" fill="var(--body)">Priority: keep it confidential</text>
+            <rect x="410" y="20" width="340" height="170" rx="14" fill="var(--zone-bms)"/>
+            <text x="430" y="52" font-size="13" font-weight="700" fill="var(--muted)" letter-spacing="1.5">OT SECURITY (IEC 62443)</text>
+            <text x="430" y="84" font-size="19" font-weight="800" fill="var(--ink)">Protects physical processes</text>
+            <text x="430" y="114" font-size="15" fill="var(--body)">BMS, CCTV, access, lifts, AV</text>
+            <text x="430" y="140" font-size="15" fill="var(--body)">Worst case: people hurt, plant stops</text>
+            <text x="430" y="166" font-size="15" fill="var(--body)">Priority: keep it running and safe</text>
+            <path d="M356 105 L404 105" stroke="var(--accent)" stroke-width="3" marker-end="url(#ar1)"/>
+            <defs><marker id="ar1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/></marker></defs>
+          </svg>
+        </div>
+        <p class="cap">Same discipline, different priority. In OT, availability and safety come first.</p>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"ISO 27001 protects information. IEC 62443 protects the systems that keep a building running and its people safe."</p></div>
+        <button class="donebtn" data-done="1" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="step" id="s2" data-step="2">
+        <div class="k">STEP 2 OF 7 · WHO EACH PART IS FOR</div>
+        <h2>Three roles, four groups of parts</h2>
+        <p class="why">The standard is a family of documents, called parts. Do not try to learn them all. Learn who each part is written for. There are three roles, and each role has its own parts. Part numbers read as <span class="mono">group-number</span>, so 2-4 is group 2, document 4.</p>
+        <div class="analogy"><span class="lbl">Think of it as</span><p>Building a hotel. The <b>owner</b> decides how safe it must be. The <b>contractor</b> installs and maintains it. The <b>manufacturer</b> makes the controllers and cameras. Each has different homework.</p></div>
+        <div class="fig">
+          <svg viewBox="0 0 760 300" role="img" aria-label="Roles mapped to IEC 62443 parts">
+            <text x="20" y="28" font-size="12" font-weight="700" fill="var(--muted)" letter-spacing="1.5">GROUP 1 · GENERAL (EVERYONE)</text>
+            <rect x="20" y="38" width="720" height="40" rx="10" fill="var(--panel)" stroke="var(--line)"/>
+            <text x="38" y="64" font-size="15" fill="var(--ink)"><tspan font-family="var(--mono)" font-weight="700">1-1</tspan>  Terminology, concepts and models: the shared vocabulary</text>
+            <g>
+              <rect x="20" y="100" width="230" height="186" rx="12" fill="var(--zone-bms)"/>
+              <text x="36" y="128" font-size="12" font-weight="700" fill="var(--muted)" letter-spacing="1.5">ASSET OWNER</text>
+              <text x="36" y="150" font-size="15" font-weight="700" fill="var(--ink)">The building owner or FM</text>
+              <text x="36" y="182" font-size="14" fill="var(--ink)"><tspan font-family="var(--mono)" font-weight="700">2-1</tspan> Run a security programme</text>
+              <text x="36" y="206" font-size="14" fill="var(--ink)"><tspan font-family="var(--mono)" font-weight="700">2-3</tspan> Patch control systems</text>
+              <text x="36" y="230" font-size="14" fill="var(--ink)"><tspan font-family="var(--mono)" font-weight="700">3-2</tspan> Assess risk, set zones</text>
+              <text x="36" y="254" font-size="12.5" fill="var(--muted)">Groups 2 and 3</text>
+            </g>
+            <g>
+              <rect x="265" y="100" width="230" height="186" rx="12" fill="var(--zone-cctv)"/>
+              <text x="281" y="128" font-size="12" font-weight="700" fill="var(--muted)" letter-spacing="1.5">SERVICE PROVIDER</text>
+              <text x="281" y="150" font-size="15" font-weight="700" fill="var(--ink)">The integrator or maintainer</text>
+              <text x="281" y="182" font-size="14" fill="var(--ink)"><tspan font-family="var(--mono)" font-weight="700">2-4</tspan> Prove security capability:</text>
+              <text x="281" y="204" font-size="14" fill="var(--ink)">remote access, patching,</text>
+              <text x="281" y="226" font-size="14" fill="var(--ink)">backups, staff skills</text>
+              <text x="281" y="254" font-size="12.5" fill="var(--muted)">Group 2</text>
+            </g>
+            <g>
+              <rect x="510" y="100" width="230" height="186" rx="12" fill="var(--zone-av)"/>
+              <text x="526" y="128" font-size="12" font-weight="700" fill="var(--muted)" letter-spacing="1.5">PRODUCT SUPPLIER</text>
+              <text x="526" y="150" font-size="15" font-weight="700" fill="var(--ink)">The manufacturer</text>
+              <text x="526" y="182" font-size="14" fill="var(--ink)"><tspan font-family="var(--mono)" font-weight="700">3-3</tspan> System security levels</text>
+              <text x="526" y="206" font-size="14" fill="var(--ink)"><tspan font-family="var(--mono)" font-weight="700">4-1</tspan> Build products securely</text>
+              <text x="526" y="230" font-size="14" fill="var(--ink)"><tspan font-family="var(--mono)" font-weight="700">4-2</tspan> Secure components</text>
+              <text x="526" y="254" font-size="12.5" fill="var(--muted)">Groups 3 and 4</text>
+            </g>
+          </svg>
+        </div>
+        <p class="cap">3-3 is used by everyone: suppliers build to it, integrators configure to it, owners specify it. It sits with the supplier here because it describes what a system can do.</p>
+        <div class="tbl"><table>
+          <thead><tr><th>Part</th><th>Plain meaning</th><th>Your crosswalk row</th></tr></thead>
+          <tbody>
+            <tr><td class="code">2-1</td><td>The owner runs a security programme for the control systems, with its own scope and owner</td><td>OT-01 <span class="pill p-par">Partial</span> BMS and CCTV sit with Facilities, outside the ISMS</td></tr>
+            <tr><td class="code">2-3</td><td>Patch through a managed process, with vendor-approved patches and planned windows</td><td>OT-07 <span class="pill p-par">Partial</span> Head-end PC stuck on an old Windows build</td></tr>
+            <tr><td class="code">2-4</td><td>Integrators must show defined security capabilities</td><td>OT-06 <span class="pill p-par">Partial</span> AV integrator holds the only copy of the code</td></tr>
+            <tr><td class="code">3-2</td><td>Assess risk per zone and set a target level for each</td><td>OT-05 <span class="pill p-gap">Gap</span> No ISO equivalent</td></tr>
+            <tr><td class="code">4-1 / 4-2</td><td>Buy secure products from secure suppliers</td><td>OT-31 <span class="pill p-par">Partial</span> Tender says nothing about security</td></tr>
+          </tbody>
+        </table></div>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"Owners use 2-1 and 3-2, integrators answer to 2-4, manufacturers build to 4-1 and 4-2, and 3-3 sets the levels everyone works to."</p></div>
+        <button class="donebtn" data-done="2" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="step" id="s3" data-step="3">
+        <div class="k">STEP 3 OF 7 · ZONES AND CONDUITS</div>
+        <h2>Split the building into zones. Control every path between them.</h2>
+        <p class="why">A <b>zone</b> is a group of systems that need the same level of protection. A <b>conduit</b> is a controlled path between two zones, usually a firewall rule, a VPN or a gateway. The rule is simple: zones are separated, and nothing crosses between them except through a conduit you have documented and control.</p>
+        <div class="analogy"><span class="lbl">Think of it as</span><p>Fire compartments and fire doors. The zone is the compartment. The conduit is the fire door: it exists on purpose, it is the only way through, and someone checks it closes properly.</p></div>
+        <div class="fig">
+          <svg viewBox="0 0 760 360" role="img" aria-label="A hotel split into zones with conduits between them. Click a zone for details." id="hotel">
+            <defs><marker id="ar2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker></defs>
+            <text x="20" y="26" font-size="12" font-weight="700" fill="var(--muted)" letter-spacing="1.5">EXAMPLE: A HOTEL. CLICK OR TAB TO A ZONE.</text>
+            <g class="zone" data-z="it" tabindex="0" role="button" aria-label="Corporate IT zone"><rect x="20" y="44" width="200" height="100" rx="12" fill="var(--zone-it)"/><text x="36" y="74" font-size="15" font-weight="700" fill="var(--ink)">Corporate IT</text><text x="36" y="96" font-size="13" fill="var(--body)">Email, PMS, finance</text><text x="36" y="128" font-size="12.5" font-family="var(--mono)" fill="var(--muted)">SL-T 2</text></g>
+            <g class="zone" data-z="bms" tabindex="0" role="button" aria-label="BMS zone"><rect x="280" y="44" width="200" height="100" rx="12" fill="var(--zone-bms)"/><text x="296" y="74" font-size="15" font-weight="700" fill="var(--ink)">BMS</text><text x="296" y="96" font-size="13" fill="var(--body)">HVAC, chillers, smoke control</text><text x="296" y="128" font-size="12.5" font-family="var(--mono)" fill="var(--muted)">SL-T 2</text></g>
+            <g class="zone" data-z="acc" tabindex="0" role="button" aria-label="Access control zone"><rect x="540" y="44" width="200" height="100" rx="12" fill="var(--zone-acc)"/><text x="556" y="74" font-size="15" font-weight="700" fill="var(--ink)">Access control</text><text x="556" y="96" font-size="13" fill="var(--body)">Door readers, fire exits</text><text x="556" y="128" font-size="12.5" font-family="var(--mono)" fill="var(--muted)">SL-T 2</text></g>
+            <g class="zone" data-z="cctv" tabindex="0" role="button" aria-label="CCTV zone"><rect x="20" y="214" width="200" height="100" rx="12" fill="var(--zone-cctv)"/><text x="36" y="244" font-size="15" font-weight="700" fill="var(--ink)">CCTV</text><text x="36" y="266" font-size="13" fill="var(--body)">IP cameras, recorder</text><text x="36" y="298" font-size="12.5" font-family="var(--mono)" fill="var(--muted)">SL-T 2</text></g>
+            <g class="zone" data-z="av" tabindex="0" role="button" aria-label="AV zone"><rect x="280" y="214" width="200" height="100" rx="12" fill="var(--zone-av)"/><text x="296" y="244" font-size="15" font-weight="700" fill="var(--ink)">AV and meeting rooms</text><text x="296" y="266" font-size="13" fill="var(--body)">Touch panels, DSP, screens</text><text x="296" y="298" font-size="12.5" font-family="var(--mono)" fill="var(--muted)">SL-T 1</text></g>
+            <g class="zone" data-z="wifi" tabindex="0" role="button" aria-label="Guest Wi-Fi zone"><rect x="540" y="214" width="200" height="100" rx="12" fill="var(--zone-wifi)"/><text x="556" y="244" font-size="15" font-weight="700" fill="var(--ink)">Guest Wi-Fi</text><text x="556" y="266" font-size="13" fill="var(--body)">Untrusted: anyone can join</text><text x="556" y="298" font-size="12.5" font-family="var(--mono)" fill="var(--muted)">Untrusted</text></g>
+            <line x1="220" y1="94" x2="276" y2="94" stroke="var(--accent)" stroke-width="4" marker-end="url(#ar2)"/>
+            <rect x="232" y="80" width="32" height="28" rx="5" fill="var(--panel)" stroke="var(--accent)" stroke-width="2"/><text x="248" y="99" text-anchor="middle" font-size="12" font-weight="700" fill="var(--accent-ink)">FW</text>
+            <line x1="380" y1="144" x2="380" y2="210" stroke="var(--accent)" stroke-width="4"/>
+            <rect x="364" y="164" width="32" height="28" rx="5" fill="var(--panel)" stroke="var(--accent)" stroke-width="2"/><text x="380" y="183" text-anchor="middle" font-size="12" font-weight="700" fill="var(--accent-ink)">FW</text>
+            <line x1="640" y1="144" x2="640" y2="210" stroke="var(--red)" stroke-width="3" stroke-dasharray="7 6"/>
+            <text x="652" y="182" font-size="12.5" font-weight="700" fill="var(--red)">No path allowed</text>
+            <path d="M380 44 C380 14 470 6 500 6" stroke="var(--amber)" stroke-width="3" fill="none" stroke-dasharray="6 5"/>
+            <text x="506" y="11" font-size="12.5" font-weight="700" fill="var(--amber)">Integrator VPN (conduit)</text>
+            <circle cx="470" cy="148" r="11" fill="var(--red)"/><text x="470" y="153" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">!</text>
+            <text x="486" y="166" font-size="12" fill="var(--red)" font-weight="600">Hidden 4G router</text>
+            <text x="20" y="346" font-size="12.5" fill="var(--muted)">Green = documented conduit with a firewall. Amber = remote access conduit. Red = a path that must not exist.</text>
+          </svg>
+        </div>
+        <div class="info" id="zinfo" aria-live="polite"></div>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"Every system goes in a zone, every path between zones is a conduit with an owner and a rule, and anything else, like a 4G router in the plant room, is a hole."</p></div>
+        <button class="donebtn" data-done="3" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <!-- STEP 4 -->
+      <section class="step" id="s4" data-step="4">
+        <div class="k">STEP 4 OF 7 · SECURITY LEVELS</div>
+        <h2>How strong does each zone need to be? Size it to the attacker.</h2>
+        <p class="why">A security level, SL 1 to SL 4, says what kind of attacker a zone must be able to resist. You do not give every zone SL 4, just as you do not put a bank vault door on a broom cupboard. You pick the level that matches who might attack and what they could break.</p>
+        <div class="fig">
+          <svg viewBox="0 0 760 290" role="img" aria-label="Security levels 1 to 4 as a staircase of attacker capability">
+            <text x="20" y="24" font-size="12" font-weight="700" fill="var(--muted)" letter-spacing="1.5">EACH STEP UP = A MORE CAPABLE ATTACKER</text>
+            <rect x="20" y="220" width="170" height="54" rx="8" fill="var(--zone-it)"/><text x="34" y="244" font-size="16" font-weight="800" fill="var(--ink)" font-family="var(--mono)">SL 1</text><text x="34" y="264" font-size="12.5" fill="var(--body)">Accident or casual misuse</text>
+            <rect x="200" y="166" width="170" height="108" rx="8" fill="var(--zone-bms)"/><text x="214" y="190" font-size="16" font-weight="800" fill="var(--ink)" font-family="var(--mono)">SL 2</text><text x="214" y="210" font-size="12.5" fill="var(--body)">Deliberate, simple means,</text><text x="214" y="228" font-size="12.5" fill="var(--body)">generic skills, few resources</text>
+            <rect x="380" y="108" width="170" height="166" rx="8" fill="var(--zone-cctv)"/><text x="394" y="132" font-size="16" font-weight="800" fill="var(--ink)" font-family="var(--mono)">SL 3</text><text x="394" y="152" font-size="12.5" fill="var(--body)">Sophisticated means,</text><text x="394" y="170" font-size="12.5" fill="var(--body)">control-system skills,</text><text x="394" y="188" font-size="12.5" fill="var(--body)">moderate resources</text>
+            <rect x="560" y="44" width="180" height="230" rx="8" fill="var(--zone-wifi)"/><text x="574" y="68" font-size="16" font-weight="800" fill="var(--ink)" font-family="var(--mono)">SL 4</text><text x="574" y="88" font-size="12.5" fill="var(--body)">Sophisticated means,</text><text x="574" y="106" font-size="12.5" fill="var(--body)">control-system skills,</text><text x="574" y="124" font-size="12.5" fill="var(--body)">extended resources,</text><text x="574" y="142" font-size="12.5" fill="var(--body)">high motivation</text><text x="574" y="170" font-size="12" fill="var(--muted)">Think: a nation state</text>
+            <text x="214" y="258" font-size="12" fill="var(--accent-ink)" font-weight="600">Hotel BMS</text>
+            <text x="394" y="240" font-size="12" fill="var(--accent-ink)" font-weight="600">Hospital smoke control</text>
+          </svg>
+        </div>
+        <p class="cap">Building examples are from your crosswalk row OT-05: a hotel BMS zone at SL-T 2, a hospital smoke-control zone at SL-T 3.</p>
+        <div class="tbl"><table>
+          <thead><tr><th>Term</th><th>Plain meaning</th><th>Who sets it</th></tr></thead>
+          <tbody>
+            <tr><td class="code">SL-T</td><td><b>Target.</b> The level a zone needs, decided in the risk assessment</td><td>Asset owner (3-2)</td></tr>
+            <tr><td class="code">SL-C</td><td><b>Capability.</b> The level a product or system can reach when set up properly</td><td>Supplier (3-3, 4-2)</td></tr>
+            <tr><td class="code">SL-A</td><td><b>Achieved.</b> The level actually in place on site today</td><td>Measured in audit</td></tr>
+          </tbody>
+        </table></div>
+        <div class="analogy"><span class="lbl">The test</span><p>If <b>SL-A</b> is lower than <b>SL-T</b>, you have a gap to close. If the product's <b>SL-C</b> is lower than SL-T, no amount of configuration will get you there: you need a compensating control or a different product.</p></div>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"The owner sets a target level per zone from the risk, the supplier says what their kit can reach, and the audit checks what is really achieved."</p></div>
+        <button class="donebtn" data-done="4" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <!-- STEP 5 -->
+      <section class="step" id="s5" data-step="5">
+        <div class="k">STEP 5 OF 7 · THE SEVEN FOUNDATIONAL REQUIREMENTS</div>
+        <h2>Seven questions every zone must answer</h2>
+        <p class="why">Every detailed requirement in 3-3 (called an SR, system requirement) sits under one of seven foundational requirements, FR 1 to FR 7. Learn the seven as plain questions. Each card shows a building example and the matching row in your crosswalk.</p>
+        <div class="frs" id="frs"></div>
+        <p class="cap">Memory hook, in order: <b>Who</b> are you, <b>what</b> may you do, is it <b>intact</b>, is it <b>private</b>, <b>where</b> can it flow, do we <b>notice</b>, does it <b>keep running</b>.</p>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"Identify, authorise, protect integrity, protect confidentiality, restrict flow, respond in time, stay available. In OT, the last one usually matters most."</p></div>
+        <button class="donebtn" data-done="5" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <!-- STEP 6 -->
+      <section class="step" id="s6" data-step="6">
+        <div class="k">STEP 6 OF 7 · THE RISK ASSESSMENT WORKFLOW (3-2)</div>
+        <h2>How an owner gets from "a building" to "a target level per zone"</h2>
+        <p class="why">Part 3-2 gives seven steps, called ZCR 1 to ZCR 7 (zone and conduit requirements). This is the workflow you would run as a consultant. It is also where steps 3 and 4 come together.</p>
+        <div class="fig">
+          <svg viewBox="0 0 760 250" role="img" aria-label="Seven-step risk workflow from IEC 62443-3-2">
+            <defs><marker id="ar3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker></defs>
+            <g font-size="13">
+              <rect x="10" y="30" width="170" height="78" rx="10" fill="var(--panel)" stroke="var(--line)"/><text x="24" y="54" font-family="var(--mono)" font-weight="700" fill="var(--accent-ink)">ZCR 1</text><text x="24" y="76" fill="var(--ink)" font-weight="600">Define what's in scope</text><text x="24" y="94" fill="var(--muted)" font-size="12">the system under review</text>
+              <rect x="200" y="30" width="170" height="78" rx="10" fill="var(--panel)" stroke="var(--line)"/><text x="214" y="54" font-family="var(--mono)" font-weight="700" fill="var(--accent-ink)">ZCR 2</text><text x="214" y="76" fill="var(--ink)" font-weight="600">Initial risk assessment</text><text x="214" y="94" fill="var(--muted)" font-size="12">worst case, before controls</text>
+              <rect x="390" y="30" width="170" height="78" rx="10" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/><text x="404" y="54" font-family="var(--mono)" font-weight="700" fill="var(--accent-ink)">ZCR 3</text><text x="404" y="76" fill="var(--ink)" font-weight="600">Draw zones and conduits</text><text x="404" y="94" fill="var(--muted)" font-size="12">step 3 of this page</text>
+              <rect x="580" y="30" width="170" height="78" rx="10" fill="var(--panel)" stroke="var(--line)"/><text x="594" y="54" font-family="var(--mono)" font-weight="700" fill="var(--accent-ink)">ZCR 4</text><text x="594" y="76" fill="var(--ink)" font-weight="600">Above tolerable risk?</text><text x="594" y="94" fill="var(--muted)" font-size="12">if no, stop here</text>
+              <rect x="580" y="150" width="170" height="78" rx="10" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/><text x="594" y="174" font-family="var(--mono)" font-weight="700" fill="var(--accent-ink)">ZCR 5</text><text x="594" y="196" fill="var(--ink)" font-weight="600">Detailed assessment</text><text x="594" y="214" fill="var(--muted)" font-size="12">set SL-T per zone (step 4)</text>
+              <rect x="390" y="150" width="170" height="78" rx="10" fill="var(--panel)" stroke="var(--line)"/><text x="404" y="174" font-family="var(--mono)" font-weight="700" fill="var(--accent-ink)">ZCR 6</text><text x="404" y="196" fill="var(--ink)" font-weight="600">Write it down</text><text x="404" y="214" fill="var(--muted)" font-size="12">requirements, assumptions</text>
+              <rect x="200" y="150" width="170" height="78" rx="10" fill="var(--panel)" stroke="var(--line)"/><text x="214" y="174" font-family="var(--mono)" font-weight="700" fill="var(--accent-ink)">ZCR 7</text><text x="214" y="196" fill="var(--ink)" font-weight="600">Owner signs it off</text><text x="214" y="214" fill="var(--muted)" font-size="12">asset owner approval</text>
+            </g>
+            <g stroke="var(--muted)" stroke-width="2" fill="none" marker-end="url(#ar3)">
+              <path d="M180 69 L196 69"/><path d="M370 69 L386 69"/><path d="M560 69 L576 69"/><path d="M665 108 L665 146"/><path d="M580 189 L564 189"/><path d="M390 189 L374 189"/>
+            </g>
+            <text x="20" y="196" font-size="12.5" fill="var(--muted)">Output: a zone register</text><text x="20" y="214" font-size="12.5" fill="var(--muted)">with SL-T and reasons,</text><text x="20" y="232" font-size="12.5" fill="var(--muted)">signed by the owner</text>
+          </svg>
+        </div>
+        <div class="analogy"><span class="lbl">Why it matters to you</span><p>Your crosswalk rows OT-03, OT-04 and OT-05 are ZCR 2, 3 and 5. ISO 27001 scores risk on information. 3-2 scores it on <b>safety, environment and physical impact</b> too, per zone. That difference is why OT-03 is only Partial.</p></div>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"Scope it, rough risk, draw zones, check against tolerable risk, detailed risk with a target level per zone, write it down, owner signs."</p></div>
+        <button class="donebtn" data-done="6" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <!-- STEP 7 -->
+      <section class="step" id="s7" data-step="7">
+        <div class="k">STEP 7 OF 7 · WHERE ISO 27001 FALLS SHORT</div>
+        <h2>Your own finding: 15 of 31 covered</h2>
+        <p class="why">This is your crosswalk, IE-REP-004. You mapped 31 building-system requirements from IEC 62443 to ISO 27001. A well-run ISMS with building systems in scope fully covers 15. It partly covers 14. Two have no ISO equivalent at all. This is the point you make to a client or a CISO.</p>
+        <div class="fig">
+          <svg viewBox="0 0 760 150" role="img" aria-label="Crosswalk coverage: 15 covered, 14 partial, 2 gap out of 31">
+            <text x="20" y="26" font-size="12" font-weight="700" fill="var(--muted)" letter-spacing="1.5">31 REQUIREMENTS, ONE BAR, TO SCALE</text>
+            <rect x="20" y="40" width="348.4" height="44" fill="var(--accent)"/>
+            <rect x="368.4" y="40" width="325.2" height="44" fill="var(--amber)"/>
+            <rect x="693.6" y="40" width="46.4" height="44" fill="var(--red)"/>
+            <text x="34" y="68" font-size="15" font-weight="800" fill="#0A0B0A" font-family="var(--mono)">15 Covered</text>
+            <text x="382" y="68" font-size="15" font-weight="800" fill="#0A0B0A" font-family="var(--mono)">14 Partial</text>
+            <text x="716" y="68" text-anchor="middle" font-size="15" font-weight="800" fill="#FFFFFF" font-family="var(--mono)">2</text>
+            <text x="20" y="116" font-size="13.5" fill="var(--body)">Most of the shortfall is not missing controls. It is scope and method: building systems left outside the ISMS,</text>
+            <text x="20" y="136" font-size="13.5" fill="var(--body)">risk scored on data rather than safety, and nobody owning the integrator's remote access.</text>
+          </svg>
+        </div>
+        <div class="tbl"><table>
+          <thead><tr><th>Row</th><th>Rating</th><th>Requirement</th><th>Building example</th></tr></thead>
+          <tbody>
+            <tr><td class="code">OT-05</td><td><span class="pill p-gap">Gap</span></td><td>Set a target security level per zone and justify it (3-2)</td><td>Hotel BMS at SL-T 2; hospital smoke control at SL-T 3</td></tr>
+            <tr><td class="code">OT-30</td><td><span class="pill p-gap">Gap</span></td><td>Security must not stop essential functions such as life safety (3-3)</td><td>MFA or lockout that blocks a smoke-control override in an emergency</td></tr>
+            <tr><td class="code">OT-01</td><td><span class="pill p-par">Partial</span></td><td>A security programme for control systems (2-1)</td><td>BMS, CCTV and AV sit with Facilities, outside the ISMS</td></tr>
+            <tr><td class="code">OT-13</td><td><span class="pill p-par">Partial</span></td><td>Control all access from untrusted networks (SR 1.13)</td><td>Vendor remote tool on the BMS; 4G router in the plant room</td></tr>
+            <tr><td class="code">OT-25</td><td><span class="pill p-par">Partial</span></td><td>Monitor the control system continuously (SR 6.1, 6.2)</td><td>A SIEM fed only by Microsoft 365 sees nothing from the BMS</td></tr>
+          </tbody>
+        </table></div>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"An ISO certificate covers about half of what a building's control systems need. The gaps are scope, safety-based risk, target levels per zone, and remote access nobody owns."</p></div>
+        <button class="donebtn" data-done="7" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <!-- QUIZ -->
+      <section class="step" id="s8">
+        <div class="k">SELF-TEST · 7 QUESTIONS</div>
+        <h2>Check yourself</h2>
+        <p class="why">Pick an answer. You get the reason straight away. Aim for 6 of 7 before you move on to NSE 4 tomorrow.</p>
+        <p style="margin-top:12px">Score: <span class="score" id="qscore">0 / 7</span> <button class="reset" id="qreset" type="button">Reset answers</button></p>
+        <div id="quiz"></div>
+      </section>
+
+      <p class="fine">Built from your IE-STUDY-001 v1.1 OT/ICS GRC Reference Pack and IE-REP-004 IEC 62443 building-OT crosswalk. Part titles, security level definitions, the seven foundational requirements and the ZCR 1 to 7 workflow are paraphrased from IEC 62443-1-1, 3-2 and 3-3; the standards themselves are copyright and paywalled except 62443-1-1. Zone security levels on the hotel diagram are teaching examples, not a real assessment. Check the ISA certificate requirements and exam format at isa.org before you book. Part of IE-DRILL-005 v3.1 IE Drill Room, Intelligent Environments.</p>
+    </main>
+  </div>
+</div>
+
+<script>
+(function(){
+  var KEY='ie-62443-study.v1', st={done:{},quiz:{}};
+  try{var raw=localStorage.getItem(KEY); if(raw){var p=JSON.parse(raw); if(p&&p.done) st=p; if(!st.quiz) st.quiz={};}}catch(e){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
+  var names=['Big picture','Who each part is for','Zones and conduits','Security levels','Seven requirements','Risk workflow','ISO 27001 gaps'];
+
+  // rail
+  var rail=document.getElementById('rail');
+  names.forEach(function(n,i){var a=document.createElement('a');a.href='#s'+(i+1);a.dataset.s=i+1;a.innerHTML='<span class="dot">'+(i+1)+'</span>'+n;rail.appendChild(a);});
+  var q=document.createElement('a');q.href='#s8';q.innerHTML='<span class="dot">?</span>Self-test';rail.appendChild(q);
+
+  function render(){
+    var n=0; for(var i=1;i<=7;i++){ if(st.done[i]) n++; }
+    document.getElementById('pnum').textContent=n+'/7';
+    document.getElementById('pbar').style.width=(n/7*100)+'%';
+    var next=0; for(var j=1;j<=7;j++){ if(!st.done[j]){next=j;break;} }
+    document.getElementById('pnote').textContent= n===7 ? 'All seven steps done. Finish with the self-test.' : 'Saved in this browser. Next: step '+next+', '+names[next-1]+'.';
+    document.querySelectorAll('.donebtn').forEach(function(b){b.setAttribute('aria-pressed',st.done[b.dataset.done]?'true':'false');});
+    rail.querySelectorAll('a[data-s]').forEach(function(a){a.classList.toggle('done',!!st.done[a.dataset.s]);});
+  }
+  document.querySelectorAll('.donebtn').forEach(function(b){b.addEventListener('click',function(){var k=b.dataset.done; st.done[k]=!st.done[k]; save(); render();});});
+
+  // zones
+  var Z={
+    it:['Corporate IT','Email, property management, finance','SL-T 2','Firewall conduit to the BMS for energy reports only, one direction, named owner','OT-23, OT-24'],
+    bms:['BMS','HVAC, chillers, smoke control, lift gateway','SL-T 2 (SL-T 3 if it runs life-safety functions, as in a hospital)','Firewall conduits to IT and AV; integrator VPN with approval and session logs; the hidden 4G router must be found and removed','OT-04, OT-05, OT-13'],
+    acc:['Access control','Door readers, controllers, fire-exit release','SL-T 2','No path from guest Wi-Fi. Fire-exit release must work even if security controls fail','OT-30'],
+    cctv:['CCTV','IP cameras and recorder','SL-T 2','Own zone. Default camera passwords changed at commissioning','OT-11'],
+    av:['AV and meeting rooms','Touch panels, DSP, screens','SL-T 1','Firewall conduit to the BMS only for room booking or lighting scenes. Client holds a copy of the control code','OT-06, OT-27'],
+    wifi:['Guest Wi-Fi','Anyone in the hotel can join','Untrusted, outside the control system','No conduit to any control zone. A BMS on the same flat network as guest Wi-Fi breaks FR 5','OT-23']
+  };
+  var zinfo=document.getElementById('zinfo');
+  function showZ(k){
+    var z=Z[k]; document.querySelectorAll('#hotel .zone').forEach(function(g){g.classList.toggle('sel',g.dataset.z===k);});
+    zinfo.innerHTML='<span class="h">Zone</span><span class="v"><b>'+z[0]+'</b>: '+z[1]+'</span><span class="h">Target level</span><span class="v mono">'+z[2]+'</span><span class="h">Conduits and rules</span><span class="v">'+z[3]+'</span><span class="h">Crosswalk rows</span><span class="v mono">'+z[4]+'</span>';
+  }
+  document.querySelectorAll('#hotel .zone').forEach(function(g){g.addEventListener('click',function(){showZ(g.dataset.z);});g.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();showZ(g.dataset.z);}});});
+  showZ('bms');
+
+  // FRs
+  var FR=[
+    ['FR 1','Identification and authentication','Who are you?','Shared "admin" login on the BMS front end and the AV touch panel','OT-08','Covered'],
+    ['FR 2','Use control','What are you allowed to do?','Every operator can change setpoints and alarm limits','OT-14','Covered'],
+    ['FR 3','System integrity','Has anything been tampered with?','Controller firmware updated by a subcontractor with no record','OT-21','Partial'],
+    ['FR 4','Data confidentiality','Is sensitive data kept private?','Floor plans and access-control databases on the BMS server','OT-22','Covered'],
+    ['FR 5','Restricted data flow','Can data only go where it should?','BMS on the same flat network as guest Wi-Fi','OT-23','Covered'],
+    ['FR 6','Timely response to events','Do we notice and react in time?','A SIEM fed only by Microsoft 365 sees nothing from the BMS','OT-25','Partial'],
+    ['FR 7','Resource availability','Does it keep running under attack?','A network storm takes down the BMS and the cooling for a data room','OT-26','Partial']
+  ];
+  var cls={Covered:'p-cov',Partial:'p-par',Gap:'p-gap'};
+  document.getElementById('frs').innerHTML=FR.map(function(f){return '<div class="fr"><span class="n">'+f[0]+'</span><b>'+f[2]+'</b><span>'+f[1]+'</span><span class="ex">Building example: '+f[3]+'</span><span class="row"><span class="mono">'+f[4]+'</span><span class="pill '+cls[f[5]]+'">ISO: '+f[5]+'</span></span></div>';}).join('');
+
+  // quiz
+  var QS=[
+    ['A BMS integrator has permanent remote access. Which part sets the security requirements they must meet?',['2-1','2-4','4-2','1-1'],1,'2-4 is written for service providers: integrators and maintainers. 2-1 is the owner\'s programme, 4-2 is for component makers.'],
+    ['The hotel BMS can be reached from guest Wi-Fi. Which foundational requirement is broken?',['FR 1 Identification and authentication','FR 4 Data confidentiality','FR 5 Restricted data flow','FR 7 Resource availability'],2,'FR 5 is about data only flowing where it should. Guest Wi-Fi is untrusted and needs no path to any control zone (OT-23).'],
+    ['An attacker uses simple tools, generic skills and few resources, but on purpose. Which security level is designed to stop them?',['SL 1','SL 2','SL 3','SL 4'],1,'SL 2 resists deliberate attacks with simple means. SL 1 is accidents and casual misuse; SL 3 and 4 need control-system skills.'],
+    ['In the fire-safety analogy, what is a conduit?',['The fire compartment','The fire door: the one controlled way between compartments','The fire alarm panel','The building owner'],1,'A zone is the compartment; a conduit is the controlled path between zones, such as a firewall rule or a VPN with an owner.'],
+    ['Who sets the target security level, SL-T, for each zone?',['The product supplier','The integrator','The asset owner, in the risk assessment','The certification body'],2,'The owner sets SL-T in the 3-2 risk assessment (ZCR 5). The supplier states SL-C; the audit measures SL-A.'],
+    ['In the 3-2 workflow, which step draws the zones and conduits?',['ZCR 1','ZCR 3','ZCR 5','ZCR 7'],1,'ZCR 3 partitions the system into zones and conduits. ZCR 5 is the detailed assessment that sets SL-T; ZCR 7 is owner approval.'],
+    ['MFA on an operator station blocks the smoke-control override during a fire. What does IEC 62443 say?',['Fine, MFA is always required','Security must not stop essential functions like life safety','Remove the operator station','Raise the zone to SL 4'],1,'Security controls must not block essential functions (3-3). It is row OT-30, one of the two places ISO 27001 has no equivalent.']
+  ];
+  var quiz=document.getElementById('quiz');
+  function renderQuiz(){
+    var sc=0;
+    quiz.innerHTML=QS.map(function(qq,i){
+      var a=st.quiz[i]; if(a===qq[2]) sc++;
+      var opts=qq[1].map(function(o,j){var c=''; if(a!==undefined){ if(j===qq[2]) c='right'; else if(j===a) c='wrong'; } return '<button type="button" class="'+c+'" data-q="'+i+'" data-a="'+j+'"'+(a!==undefined?' aria-disabled="true"':'')+'>'+o+'</button>';}).join('');
+      var fb=a===undefined?'':'<p class="fb"><b>'+(a===qq[2]?'Right.':'Not quite.')+'</b> '+qq[3]+'</p>';
+      return '<div class="q"><p class="qt">'+(i+1)+'. '+qq[0]+'</p><div class="opts">'+opts+'</div>'+fb+'</div>';
+    }).join('');
+    document.getElementById('qscore').textContent=sc+' / '+QS.length;
+  }
+  quiz.addEventListener('click',function(e){var b=e.target.closest('button[data-q]'); if(!b) return; var i=+b.dataset.q; if(st.quiz[i]!==undefined) return; st.quiz[i]=+b.dataset.a; save(); renderQuiz();});
+  document.getElementById('qreset').addEventListener('click',function(){st.quiz={}; save(); renderQuiz();});
+
+  render(); renderQuiz();
+})();
+</script>
+</html>

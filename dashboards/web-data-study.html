@@ -1,0 +1,293 @@
+<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Oxylabs and Web Data Study Room</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet"><style>
+/* Layout: one study column with a sticky step rail on wide screens; each step = plain words, one diagram, one building example, one check. */
+:root{
+  --bg:#F2F2EC; --panel:#FFFFFF; --ink:#0A0B0A; --body:#2F332E; --muted:#5F655D; --line:#DCDCD4;
+  --accent:#7FB928; --accent-ink:#48651F; --accent-soft:#EEF6E2; --amber:#B9801A; --amber-soft:#FBF1DF; --red:#C23B3B; --red-soft:#FBE9E9;
+  --zone-it:#DCE7F0; --zone-bms:#E4F0D2; --zone-cctv:#EFE6D2; --zone-av:#E9E2F0; --zone-wifi:#F3DFDF; --zone-acc:#DCEEEA;
+  --display:"Inter",Calibri,Arial,sans-serif; --mono:"JetBrains Mono",Consolas,"Courier New",monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0A0B0A; --panel:#101211; --ink:#F2F2EC; --body:#D9D6CA; --muted:#8C9289; --line:#262A26;
+  --accent:#7FB928; --accent-ink:#96D71A; --accent-soft:#1A2410; --amber:#D99B28; --amber-soft:#2A2010; --red:#E06666; --red-soft:#2B1414;
+  --zone-it:#1C2732; --zone-bms:#1E2A14; --zone-cctv:#2B2416; --zone-av:#251E2D; --zone-wifi:#2D1A1A; --zone-acc:#14282A; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0A0B0A; --panel:#101211; --ink:#F2F2EC; --body:#D9D6CA; --muted:#8C9289; --line:#262A26;
+  --accent:#7FB928; --accent-ink:#96D71A; --accent-soft:#1A2410; --amber:#D99B28; --amber-soft:#2A2010; --red:#E06666; --red-soft:#2B1414;
+  --zone-it:#1C2732; --zone-bms:#1E2A14; --zone-cctv:#2B2416; --zone-av:#251E2D; --zone-wifi:#2D1A1A; --zone-acc:#14282A; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--body);font-family:var(--display);font-size:16.5px;line-height:1.6}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 64px}
+h1,h2,h3{color:var(--ink);margin:0;text-wrap:balance}
+h1{font-size:clamp(28px,4.4vw,42px);font-weight:800;letter-spacing:-.025em;line-height:1.08}
+h2{font-size:clamp(22px,2.8vw,28px);font-weight:800;letter-spacing:-.02em;line-height:1.15}
+h3{font-size:17px;font-weight:700}
+p{margin:0}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.wordmark{font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--accent-ink)}
+.lede{max-width:62ch;margin-top:10px;color:var(--body)}
+button{font:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,.zone:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+a{color:var(--accent-ink)}
+
+/* top summary */
+.top{display:grid;grid-template-columns:1.3fr 1fr;gap:24px;align-items:end;margin-top:6px}
+.prog{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.prog .row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.prog .big{font-family:var(--mono);font-size:30px;font-weight:600;color:var(--ink)}
+.bar{height:10px;border-radius:99px;background:var(--line);margin-top:10px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent);border-radius:99px;transition:width .3s}
+.prog small{display:block;margin-top:8px;color:var(--muted);font-size:13.5px}
+
+/* plan timeline */
+.plan{margin-top:24px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.slot{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:4px}
+.slot .t{font-family:var(--mono);font-size:12.5px;color:var(--accent-ink);font-weight:600}
+.slot b{color:var(--ink);font-size:15px}
+.slot span{font-size:13.5px;color:var(--muted)}
+.slot:hover{border-color:var(--accent)}
+
+/* layout */
+.grid{display:grid;grid-template-columns:210px 1fr;gap:32px;margin-top:36px;align-items:start}
+.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);display:flex;flex-direction:column;gap:4px}
+.rail a{display:flex;gap:10px;align-items:center;padding:8px 10px;border-radius:8px;text-decoration:none;color:var(--body);font-size:14.5px}
+.rail a:hover{background:var(--panel)}
+.rail .dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-family:var(--mono);font-size:10.5px;color:var(--muted);flex:0 0 auto}
+.rail a.done .dot{background:var(--accent);border-color:var(--accent);color:#0A0B0A}
+.steps{display:flex;flex-direction:column;gap:28px;min-width:0}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:26px 26px 22px;scroll-margin-top:16px;min-width:0}
+.step .k{font-family:var(--mono);font-size:12.5px;color:var(--accent-ink);font-weight:600;letter-spacing:.06em}
+.step h2{margin-top:6px}
+.step .why{margin-top:10px;max-width:68ch}
+.analogy{margin-top:16px;display:flex;gap:14px;background:var(--accent-soft);border-radius:12px;padding:14px 16px}
+.analogy b{color:var(--ink)}
+.analogy .lbl{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent-ink);white-space:nowrap;padding-top:3px}
+.fig{margin-top:18px;overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--bg);padding:14px}
+.fig svg{display:block;width:100%;min-width:620px;height:auto}
+.fig svg text{font-family:var(--display)}
+.cap{font-size:13.5px;color:var(--muted);margin-top:8px}
+.say{margin-top:16px;border-left:3px solid var(--accent);padding:4px 0 4px 14px}
+.say .lbl{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.say p{margin-top:4px;color:var(--ink)}
+.donebtn{margin-top:20px;display:inline-flex;gap:10px;align-items:center;border:1.5px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:9px 16px;font-weight:600;font-size:14.5px}
+.donebtn .box{width:18px;height:18px;border-radius:5px;border:2px solid var(--muted);display:grid;place-items:center}
+.donebtn[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.donebtn[aria-pressed="true"] .box{background:var(--accent);border-color:var(--accent)}
+.donebtn[aria-pressed="true"] .box::after{content:"";width:8px;height:4px;border-left:2px solid #0A0B0A;border-bottom:2px solid #0A0B0A;transform:rotate(-45deg) translate(1px,-1px)}
+
+/* tables and chips */
+.tbl{margin-top:16px;overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{width:100%;border-collapse:collapse;font-size:14.5px;min-width:560px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--ink);color:var(--bg);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700}
+tr:last-child td{border-bottom:0}
+td.code{font-family:var(--mono);white-space:nowrap;color:var(--ink);font-weight:600}
+.pill{display:inline-block;white-space:nowrap;border-radius:999px;padding:1px 9px;font-size:12px;font-weight:600}
+.p-cov{background:var(--accent-soft);color:var(--accent-ink)}
+.p-par{background:var(--amber-soft);color:var(--amber)}
+.p-gap{background:var(--red-soft);color:var(--red)}
+
+/* zone explorer */
+.zone{cursor:pointer}
+.zone rect{stroke:var(--line);stroke-width:1.5}
+.zone.sel rect{stroke:var(--accent);stroke-width:3}
+.info{margin-top:12px;display:grid;grid-template-columns:auto 1fr;gap:6px 16px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:15px}
+.info .h{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding-top:2px}
+.info .v{color:var(--ink)}
+
+/* FR cards */
+.frs{margin-top:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.fr{border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;background:var(--bg)}
+.fr .n{font-family:var(--mono);font-size:12.5px;color:var(--accent-ink);font-weight:600}
+.fr b{color:var(--ink)}
+.fr .ex{font-size:14px}
+.fr .row{display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--muted);margin-top:auto}
+
+/* quiz */
+.q{border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:12px;background:var(--bg)}
+.q .qt{color:var(--ink);font-weight:600}
+.opts{display:grid;gap:8px;margin-top:10px}
+.opts button{text-align:left;border:1.5px solid var(--line);background:var(--panel);color:var(--body);border-radius:10px;padding:9px 12px;font-size:15px}
+.opts button:hover{border-color:var(--muted)}
+.opts button.right{border-color:var(--accent);background:var(--accent-soft);color:var(--ink)}
+.opts button.wrong{border-color:var(--red);background:var(--red-soft)}
+.fb{margin-top:10px;font-size:14.5px}
+.fb b{color:var(--ink)}
+.score{font-family:var(--mono);color:var(--ink);font-weight:600}
+.reset{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:8px;padding:6px 12px;font-size:13.5px}
+.fine{margin-top:28px;font-size:13px;color:var(--muted);max-width:90ch}
+
+@media (max-width:900px){.grid{grid-template-columns:1fr}.rail{display:none}.top{grid-template-columns:1fr}.plan{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.plan{grid-template-columns:1fr}.step{padding:20px 16px}.analogy{flex-direction:column;gap:4px}.info{grid-template-columns:1fr}}
+@media (max-width:660px){.fig::before{content:"Swipe sideways to see the whole diagram";display:block;font-size:12.5px;color:var(--muted);margin-bottom:8px;position:sticky;left:0}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style></head><body><div class="wrap">
+  <div class="wordmark">Intelligent Environments</div>
+  <div class="top">
+    <div>
+      <h1>Oxylabs and Web Data Study Room</h1>
+      <p class="lede">How businesses collect public web data at scale, why they need proxies and APIs to do it, how IE turns it into Brand Watch, and where the legal line is. Five steps.</p>
+    </div>
+    <div class="prog" aria-live="polite">
+      <div class="row"><span>Your progress</span><span class="big" id="pnum">0/5</span></div>
+      <div class="bar"><i id="pbar"></i></div>
+      <small id="pnote">Saved in this browser. Start with step 1.</small>
+    </div>
+  </div>
+  <div class="plan" aria-label="60 minutes">
+    <a class="slot" href="#s1"><span class="t">0 to 20 min</span><b>Steps 1 and 2</b><span>Web data, and why proxies</span></a>
+    <a class="slot" href="#s3"><span class="t">20 to 40 min</span><b>Steps 3 and 4</b><span>APIs, and the Brand Watch build</span></a>
+    <a class="slot" href="#s5"><span class="t">40 to 55 min</span><b>Step 5</b><span>The legal line</span></a>
+    <a class="slot" href="#s8"><span class="t">55 to 60 min</span><b>Self-test</b><span>6 questions</span></a>
+  </div>
+  <div class="grid">
+    <nav class="rail" aria-label="Steps" id="rail"></nav>
+    <main class="steps">
+
+      <section class="step" id="s1" data-step="1" data-name="Web data">
+        <div class="k">STEP 1 OF 5 · WHAT WEB DATA COLLECTION IS</div>
+        <h2>A script reads public pages the way you would, thousands of times</h2>
+        <p class="why">When you search Google or open a website, your browser asks a server for a page and shows it. A <b>scraper</b> does the same with a script: it asks for many pages and pulls out the useful parts, such as a domain name, a price or a company name, into a table. It only sees what any visitor could see.</p>
+        <div class="analogy"><span class="lbl">Think of it as</span><p>A researcher reading every newspaper each morning and noting each mention of your company. The script is a team of a thousand researchers who never tire.</p></div>
+        <div class="fig">
+          <svg viewBox="0 0 760 170" role="img" aria-label="Script requests public pages and turns them into a table">
+            <defs><marker id="o1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker></defs>
+            <rect x="20" y="50" width="150" height="70" rx="10" fill="var(--zone-it)"/><text x="36" y="80" font-size="15" font-weight="700" fill="var(--ink)">Script</text><text x="36" y="100" font-size="12" fill="var(--body)">asks for pages</text>
+            <rect x="260" y="30" width="200" height="110" rx="10" fill="var(--zone-wifi)"/><text x="276" y="58" font-size="15" font-weight="700" fill="var(--ink)">Public websites</text><text x="276" y="80" font-size="12" fill="var(--body)">search results,</text><text x="276" y="98" font-size="12" fill="var(--body)">company pages,</text><text x="276" y="116" font-size="12" fill="var(--body)">new domain listings</text>
+            <rect x="550" y="50" width="190" height="70" rx="10" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/><text x="566" y="80" font-size="15" font-weight="700" fill="var(--ink)">Clean table</text><text x="566" y="100" font-size="12" fill="var(--body)">ready for the report</text>
+            <line x1="172" y1="85" x2="256" y2="85" stroke="var(--muted)" stroke-width="3" marker-end="url(#o1)"/><line x1="462" y1="85" x2="546" y2="85" stroke="var(--muted)" stroke-width="3" marker-end="url(#o1)"/>
+          </svg>
+        </div>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"Web data collection automates reading public pages and turns them into structured data; it sees only what any visitor can see."</p></div>
+        <button class="donebtn" data-done="1" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <section class="step" id="s2" data-step="2" data-name="Why proxies">
+        <div class="k">STEP 2 OF 5 · WHY PROXIES</div>
+        <h2>Sites block one address asking too often</h2>
+        <p class="why">If thousands of requests come from one internet address, websites slow them down or block them. A <b>proxy</b> sends each request from a different address. Different proxy types look like different kinds of visitor, and cost differently.</p>
+        <div class="analogy"><span class="lbl">Think of it as</span><p>Posting letters. Send a thousand from one post office and the sorting office gets suspicious. Spread them across many post offices and each looks normal.</p></div>
+        <div class="tbl"><table>
+          <thead><tr><th>Type</th><th>Looks like</th><th>Oxylabs Starter list price</th></tr></thead>
+          <tbody>
+            <tr><td class="code">Datacenter</td><td>A server in a data centre. Cheap, easiest to spot</td><td class="mono">USD 1 per IP</td></tr>
+            <tr><td class="code">ISP</td><td>A home broadband address, but fixed and fast</td><td class="mono">USD 1.50 per IP</td></tr>
+            <tr><td class="code">Residential</td><td>A real home connection. Hardest to block</td><td class="mono">USD 6 per GB</td></tr>
+            <tr><td class="code">Mobile</td><td>A phone on a mobile network</td><td class="mono">USD 7.50 per GB</td></tr>
+          </tbody>
+        </table></div>
+        <p class="cap">Prices from a third-party check of Oxylabs' pricing on 15 Oct 2026. Confirm at oxylabs.io/pricing before quoting.</p>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"Proxies spread requests across many addresses so public data can be collected without being blocked; residential looks most like a real visitor and costs most."</p></div>
+        <button class="donebtn" data-done="2" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <section class="step" id="s3" data-step="3" data-name="APIs">
+        <div class="k">STEP 3 OF 5 · APIs DO THE HARD PART</div>
+        <h2>Pay per result, not per headache</h2>
+        <p class="why">Running your own proxies means handling blocks, CAPTCHAs and broken pages. Oxylabs' APIs do that for you: you send one request saying what you want, and you get clean data back. <b>/Search</b> returns search engine results. <b>/Scrape</b> returns a page's content, optionally already turned into structured data. You pay per thousand results, and failed requests from their side are not billed.</p>
+        <div class="fig">
+          <svg viewBox="0 0 760 170" role="img" aria-label="Request to Oxylabs API, which fetches the site and returns JSON">
+            <defs><marker id="o3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker></defs>
+            <rect x="20" y="50" width="160" height="70" rx="10" fill="var(--zone-it)"/><text x="36" y="80" font-size="14" font-weight="700" fill="var(--ink)">IE Brand Watch</text><text x="36" y="100" font-size="12" fill="var(--body)">one request</text>
+            <rect x="270" y="40" width="200" height="90" rx="10" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/><text x="286" y="68" font-size="14" font-weight="700" fill="var(--ink)">Oxylabs /Search, /Scrape</text><text x="286" y="90" font-size="12" fill="var(--body)">proxies, retries,</text><text x="286" y="108" font-size="12" fill="var(--body)">CAPTCHAs handled</text>
+            <rect x="560" y="50" width="180" height="70" rx="10" fill="var(--zone-wifi)"/><text x="576" y="80" font-size="14" font-weight="700" fill="var(--ink)">Public site</text>
+            <line x1="182" y1="78" x2="266" y2="78" stroke="var(--muted)" stroke-width="3" marker-end="url(#o3)"/><line x1="472" y1="78" x2="556" y2="78" stroke="var(--muted)" stroke-width="3" marker-end="url(#o3)"/>
+            <line x1="266" y1="104" x2="184" y2="104" stroke="var(--accent)" stroke-width="3" marker-end="url(#o3)"/><text x="190" y="128" font-size="12" font-weight="700" fill="var(--accent-ink)">clean data (JSON)</text>
+          </svg>
+        </div>
+        <div class="tbl"><table>
+          <thead><tr><th>Product</th><th>Use at IE</th><th>Starter list price</th></tr></thead>
+          <tbody>
+            <tr><td class="code">/Search</td><td>Find look-alike sites and mentions of a client's name</td><td class="mono">USD 1 per 1,000 searches</td></tr>
+            <tr><td class="code">/Scrape</td><td>Read a suspicious page or a regulator's publication list</td><td class="mono">from USD 0.50 per 1,000 results</td></tr>
+            <tr><td class="code">Free credit</td><td>Learn and build the pilot</td><td class="mono">USD 5</td></tr>
+          </tbody>
+        </table></div>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"Instead of running proxies ourselves, we call Oxylabs' /Search and /Scrape APIs and pay per result; they handle blocking."</p></div>
+        <button class="donebtn" data-done="3" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <section class="step" id="s4" data-step="4" data-name="Brand Watch build">
+        <div class="k">STEP 4 OF 5 · HOW BRAND WATCH WORKS</div>
+        <h2>From a client's name to a monthly report</h2>
+        <p class="why">Fake invoice fraud usually starts with a look-alike: a domain one letter off the client's, or a copied website. Brand Watch looks for them every month, so the client hears it from IE before a supplier gets a fake invoice.</p>
+        <div class="fig">
+          <svg viewBox="0 0 760 210" role="img" aria-label="Brand Watch pipeline">
+            <defs><marker id="o4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker></defs>
+            <g font-size="12.5">
+              <rect x="10" y="30" width="140" height="80" rx="10" fill="var(--zone-it)"/><text x="22" y="54" font-family="var(--mono)" font-weight="700" fill="var(--accent-ink)">1</text><text x="22" y="74" font-weight="700" fill="var(--ink)">Name variants</text><text x="22" y="94" fill="var(--body)">yourgarage-ae.com</text>
+              <rect x="160" y="30" width="140" height="80" rx="10" fill="var(--accent-soft)" stroke="var(--accent)"/><text x="172" y="54" font-family="var(--mono)" font-weight="700" fill="var(--accent-ink)">2</text><text x="172" y="74" font-weight="700" fill="var(--ink)">/Search</text><text x="172" y="94" fill="var(--body)">who uses them?</text>
+              <rect x="310" y="30" width="140" height="80" rx="10" fill="var(--accent-soft)" stroke="var(--accent)"/><text x="322" y="54" font-family="var(--mono)" font-weight="700" fill="var(--accent-ink)">3</text><text x="322" y="74" font-weight="700" fill="var(--ink)">/Scrape</text><text x="322" y="94" fill="var(--body)">read each page</text>
+              <rect x="460" y="30" width="140" height="80" rx="10" fill="var(--zone-cctv)"/><text x="472" y="54" font-family="var(--mono)" font-weight="700" fill="var(--accent-ink)">4</text><text x="472" y="74" font-weight="700" fill="var(--ink)">Score risk</text><text x="472" y="94" fill="var(--body)">logo? invoice form?</text>
+              <rect x="610" y="30" width="140" height="80" rx="10" fill="var(--zone-bms)"/><text x="622" y="54" font-family="var(--mono)" font-weight="700" fill="var(--accent-ink)">5</text><text x="622" y="74" font-weight="700" fill="var(--ink)">Monthly report</text><text x="622" y="94" fill="var(--body)">+ takedown steps</text>
+            </g>
+            <g stroke="var(--muted)" stroke-width="2.5" marker-end="url(#o4)"><line x1="150" y1="70" x2="157" y2="70"/><line x1="300" y1="70" x2="307" y2="70"/><line x1="450" y1="70" x2="457" y2="70"/><line x1="600" y1="70" x2="607" y2="70"/></g>
+            <text x="10" y="150" font-size="13" fill="var(--body)">Runs once a month as a Docker Compose job (Docker module, step 4). Example name is invented.</text>
+            <text x="10" y="172" font-size="13" fill="var(--body)">It only reads public pages. It never logs in, never tests or scans the suspect site.</text>
+          </svg>
+        </div>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"Brand Watch searches for look-alikes of the client's name each month, reads the suspect pages, scores them and reports what to take down."</p></div>
+        <button class="donebtn" data-done="4" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <section class="step" id="s5" data-step="5" data-name="The legal line">
+        <div class="k">STEP 5 OF 5 · THE LEGAL LINE</div>
+        <h2>Public business data yes. People's data and break-ins no.</h2>
+        <p class="why">The UAE personal data law (PDPL) has no "legitimate interests" basis like the UK GDPR, so collecting personal data needs consent, a contract or another listed basis. Oxylabs' own terms also ban non-public data, logging in without permission and any security testing through its network. Stay on the green side.</p>
+        <div class="tbl"><table>
+          <thead><tr><th>Allowed</th><th>Not allowed</th></tr></thead>
+          <tbody>
+            <tr><td><span class="pill p-cov">Yes</span> Public pages that copy a client's brand, with the client's written consent</td><td><span class="pill p-gap">No</span> Scraping names, phones or emails of people to build lead lists</td></tr>
+            <tr><td><span class="pill p-cov">Yes</span> Regulators' public publication pages</td><td><span class="pill p-gap">No</span> Anything behind a login you are not authorised to use</td></tr>
+            <tr><td><span class="pill p-cov">Yes</span> Public business listings (company name, sector, website)</td><td><span class="pill p-gap">No</span> Port scans or tests on any site, even a fake one</td></tr>
+            <tr><td><span class="pill p-cov">Yes</span> Following the site's terms and robots rules</td><td><span class="pill p-gap">No</span> Breaking a site's terms of use</td></tr>
+          </tbody>
+        </table></div>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"We collect public business data with client consent; we never harvest personal data, never log in where we are not allowed and never probe systems."</p></div>
+        <button class="donebtn" data-done="5" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <section class="step" id="s8">
+        <div class="k">SELF-TEST · 5 QUESTIONS</div>
+        <h2>Check yourself</h2>
+        <p style="margin-top:12px">Score: <span class="score" id="qscore">0</span> <button class="reset" id="qreset" type="button">Reset answers</button></p>
+        <div id="quiz"></div>
+      </section>
+      <p class="fine">Legal points are a plain-words summary, not legal advice; get a UAE lawyer to confirm before selling a data service. Oxylabs prices changed on 15 Oct 2026. Part of IE-DRILL-005 v3.2 IE Drill Room, Intelligent Environments.</p>
+    </main>
+  </div>
+</div>
+<script>
+(function(){
+  var KEY='ie-oxy-study.v1', st={done:{},quiz:{}}, QS=[["Why do businesses use proxies to collect public web data?", ["To log in to private accounts", "Because sites block many requests from one address", "To scan websites for flaws", "Proxies make data free"], 1, "Spreading requests across many addresses avoids blocks. It does not grant access to anything non-public."], ["Which proxy type looks most like a real home visitor and costs most per GB?", ["Datacenter", "Residential", "ISP", "None"], 1, "Residential proxies use real home connections: hardest to block, highest cost per GB."], ["What does Oxylabs /Search return?", ["Private emails", "Search engine results", "Server passwords", "A firewall report"], 1, "/Search returns search results; /Scrape returns page content."], ["Can IE scrape people's names and phone numbers from directories to build a lead list?", ["Yes, if public", "No: UAE PDPL has no legitimate-interests basis, so personal data needs consent or another listed basis", "Yes, with residential proxies", "Only at night"], 1, "Collect business data, not personal data. The PDPL bases are consent, contract and a few others, not legitimate interests."], ["Brand Watch finds a fake site copying a client. What must IE NOT do?", ["Report it to the client", "Advise a takedown request", "Port-scan or test the fake site", "Record the evidence"], 2, "Any security testing is banned by Oxylabs' terms and by IE's own rule without written authorisation. Report and take down."]];
+  try{var raw=localStorage.getItem(KEY); if(raw){var p=JSON.parse(raw); if(p&&p.done) st=p; if(!st.quiz) st.quiz={};}}catch(e){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
+  var secs=[].slice.call(document.querySelectorAll('section[data-step]')), N=secs.length, names=secs.map(function(s){return s.dataset.name;});
+  var rail=document.getElementById('rail');
+  names.forEach(function(n,i){var a=document.createElement('a');a.href='#s'+(i+1);a.dataset.s=i+1;a.innerHTML='<span class="dot">'+(i+1)+'</span>'+n;rail.appendChild(a);});
+  var q=document.createElement('a');q.href='#s8';q.innerHTML='<span class="dot">?</span>Self-test';rail.appendChild(q);
+  function render(){
+    var n=0; for(var i=1;i<=N;i++){ if(st.done[i]) n++; }
+    document.getElementById('pnum').textContent=n+'/'+N;
+    document.getElementById('pbar').style.width=(n/N*100)+'%';
+    var next=0; for(var j=1;j<=N;j++){ if(!st.done[j]){next=j;break;} }
+    document.getElementById('pnote').textContent= n===N ? 'All steps done. Finish with the self-test.' : 'Saved in this browser. Next: step '+next+', '+names[next-1]+'.';
+    document.querySelectorAll('.donebtn').forEach(function(b){b.setAttribute('aria-pressed',st.done[b.dataset.done]?'true':'false');});
+    rail.querySelectorAll('a[data-s]').forEach(function(a){a.classList.toggle('done',!!st.done[a.dataset.s]);});
+  }
+  document.querySelectorAll('.donebtn').forEach(function(b){b.addEventListener('click',function(){var k=b.dataset.done; st.done[k]=!st.done[k]; save(); render();});});
+  var quiz=document.getElementById('quiz');
+  function renderQuiz(){
+    var sc=0;
+    quiz.innerHTML=QS.map(function(qq,i){
+      var a=st.quiz[i]; if(a===qq[2]) sc++;
+      var opts=qq[1].map(function(o,j){var c=''; if(a!==undefined){ if(j===qq[2]) c='right'; else if(j===a) c='wrong'; } return '<button type="button" class="'+c+'" data-q="'+i+'" data-a="'+j+'">'+o+'</button>';}).join('');
+      var fb=a===undefined?'':'<p class="fb"><b>'+(a===qq[2]?'Right.':'Not quite.')+'</b> '+qq[3]+'</p>';
+      return '<div class="q"><p class="qt">'+(i+1)+'. '+qq[0]+'</p><div class="opts">'+opts+'</div>'+fb+'</div>';
+    }).join('');
+    document.getElementById('qscore').textContent=sc+' / '+QS.length;
+  }
+  quiz.addEventListener('click',function(e){var b=e.target.closest('button[data-q]'); if(!b) return; var i=+b.dataset.q; if(st.quiz[i]!==undefined) return; st.quiz[i]=+b.dataset.a; save(); renderQuiz();});
+  document.getElementById('qreset').addEventListener('click',function(){st.quiz={}; save(); renderQuiz();});
+  render(); renderQuiz();
+})();
+</script></body></html>

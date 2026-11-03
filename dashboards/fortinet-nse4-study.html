@@ -1,0 +1,388 @@
+<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Fortinet NSE 4 Study Room</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet"><style>
+/* Layout: one study column with a sticky step rail on wide screens; each step = plain words, one diagram, one building example, one check. */
+:root{
+  --bg:#F2F2EC; --panel:#FFFFFF; --ink:#0A0B0A; --body:#2F332E; --muted:#5F655D; --line:#DCDCD4;
+  --accent:#7FB928; --accent-ink:#48651F; --accent-soft:#EEF6E2; --amber:#B9801A; --amber-soft:#FBF1DF; --red:#C23B3B; --red-soft:#FBE9E9;
+  --zone-it:#DCE7F0; --zone-bms:#E4F0D2; --zone-cctv:#EFE6D2; --zone-av:#E9E2F0; --zone-wifi:#F3DFDF; --zone-acc:#DCEEEA;
+  --display:"Inter",Calibri,Arial,sans-serif; --mono:"JetBrains Mono",Consolas,"Courier New",monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0A0B0A; --panel:#101211; --ink:#F2F2EC; --body:#D9D6CA; --muted:#8C9289; --line:#262A26;
+  --accent:#7FB928; --accent-ink:#96D71A; --accent-soft:#1A2410; --amber:#D99B28; --amber-soft:#2A2010; --red:#E06666; --red-soft:#2B1414;
+  --zone-it:#1C2732; --zone-bms:#1E2A14; --zone-cctv:#2B2416; --zone-av:#251E2D; --zone-wifi:#2D1A1A; --zone-acc:#14282A; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0A0B0A; --panel:#101211; --ink:#F2F2EC; --body:#D9D6CA; --muted:#8C9289; --line:#262A26;
+  --accent:#7FB928; --accent-ink:#96D71A; --accent-soft:#1A2410; --amber:#D99B28; --amber-soft:#2A2010; --red:#E06666; --red-soft:#2B1414;
+  --zone-it:#1C2732; --zone-bms:#1E2A14; --zone-cctv:#2B2416; --zone-av:#251E2D; --zone-wifi:#2D1A1A; --zone-acc:#14282A; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--body);font-family:var(--display);font-size:16.5px;line-height:1.6}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 64px}
+h1,h2,h3{color:var(--ink);margin:0;text-wrap:balance}
+h1{font-size:clamp(28px,4.4vw,42px);font-weight:800;letter-spacing:-.025em;line-height:1.08}
+h2{font-size:clamp(22px,2.8vw,28px);font-weight:800;letter-spacing:-.02em;line-height:1.15}
+h3{font-size:17px;font-weight:700}
+p{margin:0}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.wordmark{font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--accent-ink)}
+.lede{max-width:62ch;margin-top:10px;color:var(--body)}
+button{font:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,.zone:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+a{color:var(--accent-ink)}
+
+/* top summary */
+.top{display:grid;grid-template-columns:1.3fr 1fr;gap:24px;align-items:end;margin-top:6px}
+.prog{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.prog .row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.prog .big{font-family:var(--mono);font-size:30px;font-weight:600;color:var(--ink)}
+.bar{height:10px;border-radius:99px;background:var(--line);margin-top:10px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent);border-radius:99px;transition:width .3s}
+.prog small{display:block;margin-top:8px;color:var(--muted);font-size:13.5px}
+
+/* plan timeline */
+.plan{margin-top:24px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.slot{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:4px}
+.slot .t{font-family:var(--mono);font-size:12.5px;color:var(--accent-ink);font-weight:600}
+.slot b{color:var(--ink);font-size:15px}
+.slot span{font-size:13.5px;color:var(--muted)}
+.slot:hover{border-color:var(--accent)}
+
+/* layout */
+.grid{display:grid;grid-template-columns:210px 1fr;gap:32px;margin-top:36px;align-items:start}
+.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);display:flex;flex-direction:column;gap:4px}
+.rail a{display:flex;gap:10px;align-items:center;padding:8px 10px;border-radius:8px;text-decoration:none;color:var(--body);font-size:14.5px}
+.rail a:hover{background:var(--panel)}
+.rail .dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-family:var(--mono);font-size:10.5px;color:var(--muted);flex:0 0 auto}
+.rail a.done .dot{background:var(--accent);border-color:var(--accent);color:#0A0B0A}
+.steps{display:flex;flex-direction:column;gap:28px;min-width:0}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:26px 26px 22px;scroll-margin-top:16px;min-width:0}
+.step .k{font-family:var(--mono);font-size:12.5px;color:var(--accent-ink);font-weight:600;letter-spacing:.06em}
+.step h2{margin-top:6px}
+.step .why{margin-top:10px;max-width:68ch}
+.analogy{margin-top:16px;display:flex;gap:14px;background:var(--accent-soft);border-radius:12px;padding:14px 16px}
+.analogy b{color:var(--ink)}
+.analogy .lbl{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent-ink);white-space:nowrap;padding-top:3px}
+.fig{margin-top:18px;overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--bg);padding:14px}
+.fig svg{display:block;width:100%;min-width:620px;height:auto}
+.fig svg text{font-family:var(--display)}
+.cap{font-size:13.5px;color:var(--muted);margin-top:8px}
+.say{margin-top:16px;border-left:3px solid var(--accent);padding:4px 0 4px 14px}
+.say .lbl{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.say p{margin-top:4px;color:var(--ink)}
+.donebtn{margin-top:20px;display:inline-flex;gap:10px;align-items:center;border:1.5px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:9px 16px;font-weight:600;font-size:14.5px}
+.donebtn .box{width:18px;height:18px;border-radius:5px;border:2px solid var(--muted);display:grid;place-items:center}
+.donebtn[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.donebtn[aria-pressed="true"] .box{background:var(--accent);border-color:var(--accent)}
+.donebtn[aria-pressed="true"] .box::after{content:"";width:8px;height:4px;border-left:2px solid #0A0B0A;border-bottom:2px solid #0A0B0A;transform:rotate(-45deg) translate(1px,-1px)}
+
+/* tables and chips */
+.tbl{margin-top:16px;overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{width:100%;border-collapse:collapse;font-size:14.5px;min-width:560px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--ink);color:var(--bg);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700}
+tr:last-child td{border-bottom:0}
+td.code{font-family:var(--mono);white-space:nowrap;color:var(--ink);font-weight:600}
+.pill{display:inline-block;white-space:nowrap;border-radius:999px;padding:1px 9px;font-size:12px;font-weight:600}
+.p-cov{background:var(--accent-soft);color:var(--accent-ink)}
+.p-par{background:var(--amber-soft);color:var(--amber)}
+.p-gap{background:var(--red-soft);color:var(--red)}
+
+/* zone explorer */
+.zone{cursor:pointer}
+.zone rect{stroke:var(--line);stroke-width:1.5}
+.zone.sel rect{stroke:var(--accent);stroke-width:3}
+.info{margin-top:12px;display:grid;grid-template-columns:auto 1fr;gap:6px 16px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:15px}
+.info .h{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding-top:2px}
+.info .v{color:var(--ink)}
+
+/* FR cards */
+.frs{margin-top:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.fr{border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;background:var(--bg)}
+.fr .n{font-family:var(--mono);font-size:12.5px;color:var(--accent-ink);font-weight:600}
+.fr b{color:var(--ink)}
+.fr .ex{font-size:14px}
+.fr .row{display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--muted);margin-top:auto}
+
+/* quiz */
+.q{border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:12px;background:var(--bg)}
+.q .qt{color:var(--ink);font-weight:600}
+.opts{display:grid;gap:8px;margin-top:10px}
+.opts button{text-align:left;border:1.5px solid var(--line);background:var(--panel);color:var(--body);border-radius:10px;padding:9px 12px;font-size:15px}
+.opts button:hover{border-color:var(--muted)}
+.opts button.right{border-color:var(--accent);background:var(--accent-soft);color:var(--ink)}
+.opts button.wrong{border-color:var(--red);background:var(--red-soft)}
+.fb{margin-top:10px;font-size:14.5px}
+.fb b{color:var(--ink)}
+.score{font-family:var(--mono);color:var(--ink);font-weight:600}
+.reset{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:8px;padding:6px 12px;font-size:13.5px}
+.fine{margin-top:28px;font-size:13px;color:var(--muted);max-width:90ch}
+
+@media (max-width:900px){.grid{grid-template-columns:1fr}.rail{display:none}.top{grid-template-columns:1fr}.plan{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.plan{grid-template-columns:1fr}.step{padding:20px 16px}.analogy{flex-direction:column;gap:4px}.info{grid-template-columns:1fr}}
+@media (max-width:660px){.fig::before{content:"Swipe sideways to see the whole diagram";display:block;font-size:12.5px;color:var(--muted);margin-bottom:8px;position:sticky;left:0}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style></head><body><div class="wrap">
+  <div class="wordmark">Intelligent Environments</div>
+  <div class="top">
+    <div>
+      <h1>Fortinet NSE 4 Study Room</h1>
+      <p class="lede">How a FortiGate firewall decides what gets in and out, and how you set one up for a small business. Seven steps, one idea at a time, built around one example: a 6-person garage in Abu Dhabi with an office, a parts PC and staff on their phones. Tick a step when you can explain it without looking.</p>
+    </div>
+    <div class="prog" aria-live="polite">
+      <div class="row"><span>Your progress</span><span class="big" id="pnum">0/7</span></div>
+      <div class="bar"><i id="pbar"></i></div>
+      <small id="pnote">Saved in this browser. Start with step 1.</small>
+    </div>
+  </div>
+
+  <div class="plan" aria-label="Today's 90 minutes">
+    <a class="slot" href="#s1"><span class="t">0 to 20 min</span><b>Steps 1 and 2</b><span>What a FortiGate does, and how it decides</span></a>
+    <a class="slot" href="#s3"><span class="t">20 to 45 min</span><b>Steps 3 and 4</b><span>NAT, and the security profiles</span></a>
+    <a class="slot" href="#s5"><span class="t">45 to 70 min</span><b>Steps 5 and 6</b><span>VPNs, and logs</span></a>
+    <a class="slot" href="#s8"><span class="t">70 to 90 min</span><b>Step 7 and self-test</b><span>Locking the firewall itself down, then 7 questions</span></a>
+  </div>
+
+  <div class="grid">
+    <nav class="rail" aria-label="Steps" id="rail"></nav>
+    <main class="steps">
+
+      <section class="step" id="s1" data-step="1">
+        <div class="k">STEP 1 OF 7 · WHAT A FORTIGATE DOES</div>
+        <h2>One box at the front door of the network</h2>
+        <p class="why">A FortiGate sits between the business and the internet. Everything going in or out passes through it. It does four jobs in one box: it <b>routes</b> traffic, it <b>filters</b> traffic with rules, it <b>inspects</b> what is inside the traffic for threats, and it builds <b>VPN tunnels</b> so remote people and other offices can connect safely. Fortinet's operating system on the box is called FortiOS.</p>
+        <div class="analogy"><span class="lbl">Think of it as</span><p>The reception desk of an office building. It decides who may come in (<b>rules</b>), checks bags at the door (<b>inspection</b>), gives staff a keycard for the side door (<b>VPN</b>), and writes everyone in the visitor book (<b>logs</b>).</p></div>
+        <div class="fig">
+          <svg viewBox="0 0 760 230" role="img" aria-label="Internet, FortiGate, office network">
+            <defs><marker id="a1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker></defs>
+            <rect x="10" y="60" width="170" height="110" rx="14" fill="var(--zone-wifi)"/>
+            <text x="28" y="94" font-size="16" font-weight="800" fill="var(--ink)">Internet</text>
+            <text x="28" y="118" font-size="13" fill="var(--body)">Websites, email,</text>
+            <text x="28" y="136" font-size="13" fill="var(--body)">attackers, cloud apps</text>
+            <rect x="260" y="30" width="240" height="170" rx="14" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2.5"/>
+            <text x="380" y="60" text-anchor="middle" font-size="17" font-weight="800" fill="var(--ink)">FortiGate</text>
+            <text x="380" y="78" text-anchor="middle" font-size="12" fill="var(--muted)">running FortiOS</text>
+            <g font-size="13.5" fill="var(--ink)">
+              <text x="282" y="108">1  Route</text><text x="390" y="108">2  Filter (policies)</text>
+              <text x="282" y="140">3  Inspect</text><text x="390" y="140">4  VPN tunnels</text>
+              <text x="282" y="172" fill="var(--muted)" font-size="12.5">and logs everything it decides</text>
+            </g>
+            <rect x="580" y="60" width="170" height="110" rx="14" fill="var(--zone-bms)"/>
+            <text x="598" y="94" font-size="16" font-weight="800" fill="var(--ink)">Garage office</text>
+            <text x="598" y="118" font-size="13" fill="var(--body)">6 staff, parts PC,</text>
+            <text x="598" y="136" font-size="13" fill="var(--body)">till, printer, Wi-Fi</text>
+            <line x1="184" y1="115" x2="256" y2="115" stroke="var(--muted)" stroke-width="3" marker-end="url(#a1)"/>
+            <line x1="504" y1="115" x2="576" y2="115" stroke="var(--muted)" stroke-width="3" marker-end="url(#a1)"/>
+            <text x="196" y="104" font-size="11.5" fill="var(--muted)">wan1</text><text x="516" y="104" font-size="11.5" fill="var(--muted)">internal</text>
+          </svg>
+        </div>
+        <p class="cap">The ports on the box are interfaces. Here, wan1 faces the internet and internal faces the office.</p>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"A FortiGate is a next-generation firewall: it routes, filters with policies, inspects content for threats, and terminates VPNs, all in one box."</p></div>
+        <button class="donebtn" data-done="1" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <section class="step" id="s2" data-step="2">
+        <div class="k">STEP 2 OF 7 · FIREWALL POLICIES</div>
+        <h2>The rule list is read top to bottom. First match wins.</h2>
+        <p class="why">Every connection is checked against the firewall policy list, starting at the top. The first policy that matches decides what happens, and the FortiGate stops reading. If nothing matches, the hidden last rule, the <b>implicit deny</b>, blocks it. So order matters: a broad "allow" rule above a specific "block" rule means the block never runs.</p>
+        <div class="analogy"><span class="lbl">Think of it as</span><p>A bouncer with a list. He reads from the top and acts on the first line that fits you. If your name is on no line, you do not get in.</p></div>
+        <div class="fig">
+          <svg viewBox="0 0 760 270" role="img" aria-label="Policy list checked top to bottom">
+            <defs><marker id="a2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/></marker></defs>
+            <text x="20" y="22" font-size="12" font-weight="700" fill="var(--muted)" letter-spacing="1.5">A STAFF PC OPENS A WEBSITE. WHICH RULE DECIDES?</text>
+            <g font-size="13">
+              <rect x="120" y="36" width="620" height="36" rx="6" fill="var(--panel)" stroke="var(--line)"/><text x="134" y="59" fill="var(--ink)"><tspan font-family="var(--mono)" font-weight="700">1</tspan>  internal to wan1 | Guest Wi-Fi only | service ALL | ACCEPT</text>
+              <rect x="120" y="80" width="620" height="36" rx="6" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/><text x="134" y="103" fill="var(--ink)"><tspan font-family="var(--mono)" font-weight="700">2</tspan>  internal to wan1 | Staff | HTTP, HTTPS, DNS | ACCEPT + web filter + AV</text>
+              <rect x="120" y="124" width="620" height="36" rx="6" fill="var(--panel)" stroke="var(--line)"/><text x="134" y="147" fill="var(--muted)"><tspan font-family="var(--mono)" font-weight="700">3</tspan>  internal to wan1 | Staff | ALL | DENY  (never reached for web traffic)</text>
+              <rect x="120" y="168" width="620" height="36" rx="6" fill="var(--red-soft)" stroke="var(--red)"/><text x="134" y="191" fill="var(--ink)"><tspan font-family="var(--mono)" font-weight="700">0</tspan>  Implicit deny: anything that matched nothing above is blocked</text>
+            </g>
+            <text x="20" y="62" font-size="12.5" fill="var(--muted)">checked 1st</text>
+            <text x="20" y="98" font-size="12.5" font-weight="700" fill="var(--accent-ink)">MATCH,</text><text x="20" y="114" font-size="12.5" font-weight="700" fill="var(--accent-ink)">stop</text>
+            <path d="M96 44 C 80 56, 84 80, 112 92" stroke="var(--accent)" stroke-width="3" fill="none" marker-end="url(#a2)"/>
+            <text x="20" y="236" font-size="13" fill="var(--body)">A policy matches on: incoming interface, outgoing interface, source, destination, schedule and service.</text>
+            <text x="20" y="256" font-size="13" fill="var(--body)">Then it sets the action (accept or deny), NAT, security profiles and logging.</text>
+          </svg>
+        </div>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"FortiGate policies are processed top-down, first match wins, and anything unmatched hits the implicit deny, so specific rules go above general ones."</p></div>
+        <button class="donebtn" data-done="2" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <section class="step" id="s3" data-step="3">
+        <div class="k">STEP 3 OF 7 · NAT</div>
+        <h2>Many private addresses share one public address</h2>
+        <p class="why">Office devices use private addresses (like 192.168.1.10) that the internet cannot route to. <b>Source NAT</b> swaps the private address for the FortiGate's public address on the way out, and swaps it back on the reply. To let the internet reach one machine inside, such as a camera recorder, you use a <b>Virtual IP (VIP)</b>, which is destination NAT: public address and port in, private address out.</p>
+        <div class="analogy"><span class="lbl">Think of it as</span><p>A company switchboard. Staff call out from one main number (<b>source NAT</b>). Outside callers ring the main number and ask for extension 20 (<b>VIP</b>).</p></div>
+        <div class="fig">
+          <svg viewBox="0 0 760 260" role="img" aria-label="Source NAT outbound and VIP inbound">
+            <defs><marker id="a3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker></defs>
+            <text x="20" y="24" font-size="12" font-weight="700" fill="var(--muted)" letter-spacing="1.5">OUTBOUND: SOURCE NAT</text>
+            <rect x="20" y="36" width="180" height="56" rx="10" fill="var(--zone-bms)"/><text x="34" y="60" font-size="13.5" font-weight="700" fill="var(--ink)">Parts PC</text><text x="34" y="80" font-size="12.5" font-family="var(--mono)" fill="var(--body)">192.168.1.10</text>
+            <rect x="290" y="36" width="180" height="56" rx="10" fill="var(--accent-soft)" stroke="var(--accent)"/><text x="304" y="60" font-size="13.5" font-weight="700" fill="var(--ink)">FortiGate wan1</text><text x="304" y="80" font-size="12.5" font-family="var(--mono)" fill="var(--body)">203.0.113.5</text>
+            <rect x="560" y="36" width="180" height="56" rx="10" fill="var(--zone-wifi)"/><text x="574" y="60" font-size="13.5" font-weight="700" fill="var(--ink)">Supplier website</text><text x="574" y="80" font-size="12.5" fill="var(--body)">sees 203.0.113.5</text>
+            <line x1="204" y1="64" x2="286" y2="64" stroke="var(--muted)" stroke-width="3" marker-end="url(#a3)"/><line x1="474" y1="64" x2="556" y2="64" stroke="var(--muted)" stroke-width="3" marker-end="url(#a3)"/>
+            <text x="20" y="140" font-size="12" font-weight="700" fill="var(--muted)" letter-spacing="1.5">INBOUND: VIRTUAL IP (DESTINATION NAT)</text>
+            <rect x="20" y="152" width="180" height="56" rx="10" fill="var(--zone-wifi)"/><text x="34" y="176" font-size="13.5" font-weight="700" fill="var(--ink)">Owner's phone</text><text x="34" y="196" font-size="12.5" font-family="var(--mono)" fill="var(--body)">to 203.0.113.5:8443</text>
+            <rect x="290" y="152" width="180" height="56" rx="10" fill="var(--accent-soft)" stroke="var(--accent)"/><text x="304" y="176" font-size="13.5" font-weight="700" fill="var(--ink)">VIP + policy</text><text x="304" y="196" font-size="12.5" fill="var(--body)">maps to the recorder</text>
+            <rect x="560" y="152" width="180" height="56" rx="10" fill="var(--zone-cctv)"/><text x="574" y="176" font-size="13.5" font-weight="700" fill="var(--ink)">CCTV recorder</text><text x="574" y="196" font-size="12.5" font-family="var(--mono)" fill="var(--body)">192.168.1.20:443</text>
+            <line x1="204" y1="180" x2="286" y2="180" stroke="var(--muted)" stroke-width="3" marker-end="url(#a3)"/><line x1="474" y1="180" x2="556" y2="180" stroke="var(--muted)" stroke-width="3" marker-end="url(#a3)"/>
+            <text x="20" y="232" font-size="12.5" fill="var(--red)" font-weight="600">A VIP opens a door from the internet. Prefer a VPN for remote viewing;</text><text x="20" y="248" font-size="12.5" fill="var(--red)" font-weight="600">if you must use a VIP, restrict the source and keep the recorder patched.</text>
+          </svg>
+        </div>
+        <p class="cap">Addresses shown are documentation examples, not real ones. A VIP on its own does nothing: it also needs a firewall policy that allows the traffic.</p>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"Source NAT hides inside addresses behind the firewall's public IP going out; a Virtual IP plus a policy publishes one inside service coming in."</p></div>
+        <button class="donebtn" data-done="3" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <section class="step" id="s4" data-step="4">
+        <div class="k">STEP 4 OF 7 · SECURITY PROFILES</div>
+        <h2>A policy says "allowed". Profiles check what is inside.</h2>
+        <p class="why">Accepting traffic is not enough: the allowed web traffic could still carry malware or go to a phishing site. Security profiles attached to the policy inspect the content. Most web traffic is encrypted (HTTPS), so the FortiGate can only see inside if <b>SSL/TLS deep inspection</b> is on, and that needs the FortiGate's certificate trusted on every staff device.</p>
+        <div class="fig">
+          <svg viewBox="0 0 760 210" role="img" aria-label="Traffic passing through security profiles">
+            <text x="20" y="22" font-size="12" font-weight="700" fill="var(--muted)" letter-spacing="1.5">ALLOWED TRAFFIC PASSES THROUGH THE CHECKS ON ITS POLICY</text>
+            <rect x="20" y="40" width="720" height="70" rx="35" fill="var(--bg)" stroke="var(--line)" stroke-width="2"/>
+            <g font-size="13" font-weight="700" fill="var(--ink)" text-anchor="middle">
+              <rect x="40" y="52" width="110" height="46" rx="8" fill="var(--zone-it)"/><text x="95" y="80">SSL inspection</text>
+              <rect x="160" y="52" width="100" height="46" rx="8" fill="var(--zone-bms)"/><text x="210" y="80">Antivirus</text>
+              <rect x="270" y="52" width="110" height="46" rx="8" fill="var(--zone-cctv)"/><text x="325" y="80">Web filter</text>
+              <rect x="390" y="52" width="120" height="46" rx="8" fill="var(--zone-av)"/><text x="450" y="80">App control</text>
+              <rect x="520" y="52" width="90" height="46" rx="8" fill="var(--zone-acc)"/><text x="565" y="80">IPS</text>
+              <rect x="620" y="52" width="100" height="46" rx="8" fill="var(--zone-wifi)"/><text x="670" y="80">DNS filter</text>
+            </g>
+            <g font-size="12.5" fill="var(--body)">
+              <text x="40" y="136">Opens HTTPS so the others can see inside</text>
+              <text x="40" y="156">Antivirus: malware in downloads and email</text>
+              <text x="40" y="176">Web filter: blocks sites by category (phishing, gambling)</text>
+              <text x="400" y="136">App control: allows or blocks apps (e.g. file sharing)</text>
+              <text x="400" y="156">IPS: spots exploit attempts against known flaws</text>
+              <text x="400" y="176">DNS filter: blocks bad domains before connecting</text>
+            </g>
+          </svg>
+        </div>
+        <div class="tbl"><table>
+          <thead><tr><th>Choice</th><th>Plain meaning</th><th>Trade-off</th></tr></thead>
+          <tbody>
+            <tr><td class="code">Flow-based</td><td>Checks traffic as it streams past</td><td>Faster, the usual default</td></tr>
+            <tr><td class="code">Proxy-based</td><td>Holds the whole file, checks it, then sends it on</td><td>More thorough, uses more of the box</td></tr>
+            <tr><td class="code">Certificate inspection</td><td>Reads only the site name from the certificate</td><td>No certificate needed on devices, sees little</td></tr>
+            <tr><td class="code">Deep inspection</td><td>Decrypts, inspects, re-encrypts</td><td>Sees everything; FortiGate CA must be trusted on devices; exempt banking and health sites</td></tr>
+          </tbody>
+        </table></div>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"The policy decides if traffic is allowed; security profiles decide if what is inside is safe, and without deep inspection most of it is encrypted and unseen."</p></div>
+        <button class="donebtn" data-done="4" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <section class="step" id="s5" data-step="5">
+        <div class="k">STEP 5 OF 7 · VPN</div>
+        <h2>A private tunnel across the public internet</h2>
+        <p class="why">A VPN encrypts traffic between two points so the internet in between cannot read or change it. <b>Site-to-site IPsec</b> joins two offices permanently. <b>Remote access</b> lets one person on a laptop or phone join the office network. IPsec is set up in two phases: <b>phase 1</b> (IKE) lets the two ends prove who they are and agree keys; <b>phase 2</b> builds the tunnels that carry the actual traffic.</p>
+        <div class="analogy"><span class="lbl">Think of it as</span><p>An armoured van between two branches. Phase 1 is the guards checking each other's ID and agreeing the code word. Phase 2 is loading the van and driving.</p></div>
+        <div class="fig">
+          <svg viewBox="0 0 760 226" role="img" aria-label="Site to site and remote access VPN">
+            <rect x="20" y="40" width="170" height="70" rx="12" fill="var(--zone-bms)"/><text x="36" y="70" font-size="14.5" font-weight="700" fill="var(--ink)">Garage, Mussafah</text><text x="36" y="92" font-size="12.5" fill="var(--body)">FortiGate A</text>
+            <rect x="570" y="40" width="170" height="70" rx="12" fill="var(--zone-bms)"/><text x="586" y="70" font-size="14.5" font-weight="700" fill="var(--ink)">Second branch</text><text x="586" y="92" font-size="12.5" fill="var(--body)">FortiGate B</text>
+            <rect x="200" y="62" width="360" height="26" rx="13" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/><text x="380" y="80" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--accent-ink)">Site-to-site IPsec tunnel (always on)</text>
+            <text x="380" y="52" text-anchor="middle" font-size="12" fill="var(--muted)">across the internet</text>
+            <rect x="20" y="150" width="170" height="56" rx="12" fill="var(--zone-av)"/><text x="36" y="176" font-size="14.5" font-weight="700" fill="var(--ink)">Owner at home</text><text x="36" y="196" font-size="12.5" fill="var(--body)">FortiClient + MFA</text>
+            <path d="M190 178 C 260 178, 260 112, 300 100" stroke="var(--amber)" stroke-width="3" fill="none" stroke-dasharray="7 5"/>
+            <text x="200" y="214" font-size="12.5" font-weight="700" fill="var(--amber)">Remote access tunnel to FortiGate A</text>
+            <g font-size="12.5" fill="var(--body)"><text x="480" y="146">Phase 1 (IKE): authenticate, agree keys</text><text x="480" y="166">Phase 2 (IPsec): tunnels for the traffic</text><text x="480" y="186">Both ends must match their settings</text></g>
+          </svg>
+        </div>
+        <p class="cap">Fortinet has been moving remote access away from SSL VPN towards IPsec in recent FortiOS releases. Check which FortiOS version your course and exam cover.</p>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"IPsec builds an encrypted tunnel in two phases, identity and keys first, then the data tunnels; site-to-site joins offices, remote access joins people, always with MFA."</p></div>
+        <button class="donebtn" data-done="5" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <section class="step" id="s6" data-step="6">
+        <div class="k">STEP 6 OF 7 · LOGS AND MONITORING</div>
+        <h2>If it isn't logged, it didn't happen</h2>
+        <p class="why">Every decision the FortiGate makes can be logged. Three kinds matter: <b>traffic logs</b> (who talked to whom, allowed or denied), <b>security logs</b> (what a profile caught: virus, blocked site, IPS hit) and <b>event logs</b> (changes to the box itself: logins, config changes, VPN up or down). Logs on the box itself are limited, so they are usually sent to FortiAnalyzer, FortiCloud or a SIEM where they are kept and searched.</p>
+        <div class="fig">
+          <svg viewBox="0 0 760 190" role="img" aria-label="Logs flowing from FortiGate to a log store and on to the client report">
+            <defs><marker id="a6" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker></defs>
+            <rect x="20" y="50" width="170" height="90" rx="12" fill="var(--accent-soft)" stroke="var(--accent)"/><text x="36" y="80" font-size="15" font-weight="700" fill="var(--ink)">FortiGate</text><text x="36" y="102" font-size="12.5" fill="var(--body)">traffic, security,</text><text x="36" y="120" font-size="12.5" fill="var(--body)">event logs</text>
+            <rect x="290" y="50" width="190" height="90" rx="12" fill="var(--zone-it)"/><text x="306" y="80" font-size="15" font-weight="700" fill="var(--ink)">FortiAnalyzer or SIEM</text><text x="306" y="102" font-size="12.5" fill="var(--body)">kept for months,</text><text x="306" y="120" font-size="12.5" fill="var(--body)">searchable, alerts</text>
+            <rect x="580" y="50" width="160" height="90" rx="12" fill="var(--zone-bms)"/><text x="596" y="80" font-size="15" font-weight="700" fill="var(--ink)">Monthly report</text><text x="596" y="102" font-size="12.5" fill="var(--body)">to the garage owner:</text><text x="596" y="120" font-size="12.5" fill="var(--body)">what we stopped</text>
+            <line x1="194" y1="95" x2="286" y2="95" stroke="var(--muted)" stroke-width="3" marker-end="url(#a6)"/><line x1="484" y1="95" x2="576" y2="95" stroke="var(--muted)" stroke-width="3" marker-end="url(#a6)"/>
+            <text x="20" y="176" font-size="12.5" fill="var(--muted)">This is the same idea as your IE Watch room: alerts in one place, real ones acted on, a plain report to the client.</text>
+          </svg>
+        </div>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"Traffic logs show who talked to whom, security logs show what we caught, event logs show who changed the firewall; ship them off the box so they survive and can be searched."</p></div>
+        <button class="donebtn" data-done="6" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <section class="step" id="s7" data-step="7">
+        <div class="k">STEP 7 OF 7 · PROTECT THE FIREWALL ITSELF</div>
+        <h2>The firewall is the most attacked box you own</h2>
+        <p class="why">Attackers target firewalls directly because one weak firewall opens the whole network. Fortinet flaws regularly appear on CISA's Known Exploited Vulnerabilities list. So the admin side of the FortiGate needs its own protection, and this is also where your GRC work meets the firewall: the settings below are the evidence an ISO 27001 auditor asks for.</p>
+        <div class="tbl"><table>
+          <thead><tr><th>Do this</th><th>Why</th><th>ISO 27001 control</th></tr></thead>
+          <tbody>
+            <tr><td>No admin login from the internet (wan1); trusted hosts only</td><td>Removes the main attack surface</td><td class="code">A.8.20</td></tr>
+            <tr><td>MFA and named admin accounts, no shared "admin"</td><td>A stolen password is not enough; actions are traceable</td><td class="code">A.5.17, A.8.5</td></tr>
+            <tr><td>Firmware kept current; watch Fortinet PSIRT advisories</td><td>Exploited flaws are patched fast</td><td class="code">A.8.8</td></tr>
+            <tr><td>Config backed up and changes recorded</td><td>Restore after failure; prove what changed</td><td class="code">A.8.9, A.8.32</td></tr>
+            <tr><td>Event logs sent off the box</td><td>An attacker cannot erase the trail</td><td class="code">A.8.15</td></tr>
+          </tbody>
+        </table></div>
+        <div class="analogy"><span class="lbl">Your edge</span><p>Most NSE 4 candidates know the commands. You can also say which control each setting satisfies and what evidence proves it. That is the GRC and SOC link a client or a CISO pays for.</p></div>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"Lock down the firewall first: no admin from the internet, MFA, current firmware, backed-up config and logs off the box; each one maps to an ISO 27001 control."</p></div>
+        <button class="donebtn" data-done="7" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <section class="step" id="s8">
+        <div class="k">SELF-TEST · 7 QUESTIONS</div>
+        <h2>Check yourself</h2>
+        <p class="why">Pick an answer. You get the reason straight away. Aim for 6 of 7.</p>
+        <p style="margin-top:12px">Score: <span class="score" id="qscore">0 / 7</span> <button class="reset" id="qreset" type="button">Reset answers</button></p>
+        <div id="quiz"></div>
+      </section>
+
+      <p class="fine">Built for the Fortinet NSE 4 (FortiOS administrator) track. Concepts are standard FortiOS behaviour paraphrased in plain words; menu names and defaults change between FortiOS versions, so check against the version in your Fortinet training. Addresses are documentation examples. Part of IE-DRILL-005 v3.1 IE Drill Room, Intelligent Environments.</p>
+    </main>
+  </div>
+</div>
+<script>
+(function(){
+  var KEY='ie-nse4-study.v1', st={done:{},quiz:{}};
+  try{var raw=localStorage.getItem(KEY); if(raw){var p=JSON.parse(raw); if(p&&p.done) st=p; if(!st.quiz) st.quiz={};}}catch(e){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
+  var names=['What it does','Firewall policies','NAT','Security profiles','VPN','Logs','Protect the firewall'];
+  var rail=document.getElementById('rail');
+  names.forEach(function(n,i){var a=document.createElement('a');a.href='#s'+(i+1);a.dataset.s=i+1;a.innerHTML='<span class="dot">'+(i+1)+'</span>'+n;rail.appendChild(a);});
+  var q=document.createElement('a');q.href='#s8';q.innerHTML='<span class="dot">?</span>Self-test';rail.appendChild(q);
+  function render(){
+    var n=0; for(var i=1;i<=7;i++){ if(st.done[i]) n++; }
+    document.getElementById('pnum').textContent=n+'/7';
+    document.getElementById('pbar').style.width=(n/7*100)+'%';
+    var next=0; for(var j=1;j<=7;j++){ if(!st.done[j]){next=j;break;} }
+    document.getElementById('pnote').textContent= n===7 ? 'All seven steps done. Finish with the self-test.' : 'Saved in this browser. Next: step '+next+', '+names[next-1]+'.';
+    document.querySelectorAll('.donebtn').forEach(function(b){b.setAttribute('aria-pressed',st.done[b.dataset.done]?'true':'false');});
+    rail.querySelectorAll('a[data-s]').forEach(function(a){a.classList.toggle('done',!!st.done[a.dataset.s]);});
+  }
+  document.querySelectorAll('.donebtn').forEach(function(b){b.addEventListener('click',function(){var k=b.dataset.done; st.done[k]=!st.done[k]; save(); render();});});
+  var QS=[
+    ['A broad "allow all" policy sits at line 1 and a "block file sharing" policy at line 5. What happens to file sharing?',['It is blocked, deny always wins','It is allowed, because line 1 matches first','The FortiGate asks the admin','It depends on the time of day'],1,'Policies are read top-down and the first match wins. Line 1 matches, so line 5 is never reached. Put specific rules above general ones.'],
+    ['Traffic matches none of your policies. What happens?',['It is allowed','It is logged and allowed','It is blocked by the implicit deny','It is sent to FortiAnalyzer'],2,'The hidden last rule, the implicit deny, blocks anything that matched nothing above it.'],
+    ['You want the owner to reach the CCTV recorder from outside. What publishes an inside service on the public address?',['Source NAT','A Virtual IP plus a firewall policy','A web filter profile','Phase 2 of IPsec'],1,'A Virtual IP is destination NAT, and it only works with a policy that allows the traffic. A VPN is usually the safer choice.'],
+    ['Web filtering is on, but staff still reach a phishing page over HTTPS and the FortiGate sees almost nothing. What is likely missing?',['Source NAT','Deep SSL/TLS inspection with the FortiGate certificate trusted on devices','A second WAN link','Proxy-based logging'],1,'Encrypted traffic hides its content. Deep inspection decrypts and re-checks it, which needs the FortiGate CA trusted on every device.'],
+    ['In IPsec, what happens in phase 1?',['The data tunnels are built','The two ends authenticate and agree keys (IKE)','Logs are sent to FortiAnalyzer','NAT is applied'],1,'Phase 1 (IKE) is identity and keys. Phase 2 builds the tunnels that carry the traffic.'],
+    ['Which log tells you who changed a firewall policy last night?',['Traffic log','Security log','Event log','DNS log'],2,'Event logs record changes to the box itself: admin logins, configuration changes, VPN up or down.'],
+    ['Which setting removes the biggest attack surface on the FortiGate itself?',['Allow admin login on wan1 with a strong password','No admin access from the internet; trusted hosts only','Turn off logging to save space','Use one shared admin account'],1,'Admin access from the internet is the most attacked surface. Close it, use trusted hosts and MFA (ISO A.8.20, A.8.5).']
+  ];
+  var quiz=document.getElementById('quiz');
+  function renderQuiz(){
+    var sc=0;
+    quiz.innerHTML=QS.map(function(qq,i){
+      var a=st.quiz[i]; if(a===qq[2]) sc++;
+      var opts=qq[1].map(function(o,j){var c=''; if(a!==undefined){ if(j===qq[2]) c='right'; else if(j===a) c='wrong'; } return '<button type="button" class="'+c+'" data-q="'+i+'" data-a="'+j+'"'+(a!==undefined?' aria-disabled="true"':'')+'>'+o+'</button>';}).join('');
+      var fb=a===undefined?'':'<p class="fb"><b>'+(a===qq[2]?'Right.':'Not quite.')+'</b> '+qq[3]+'</p>';
+      return '<div class="q"><p class="qt">'+(i+1)+'. '+qq[0]+'</p><div class="opts">'+opts+'</div>'+fb+'</div>';
+    }).join('');
+    document.getElementById('qscore').textContent=sc+' / '+QS.length;
+  }
+  quiz.addEventListener('click',function(e){var b=e.target.closest('button[data-q]'); if(!b) return; var i=+b.dataset.q; if(st.quiz[i]!==undefined) return; st.quiz[i]=+b.dataset.a; save(); renderQuiz();});
+  document.getElementById('qreset').addEventListener('click',function(){st.quiz={}; save(); renderQuiz();});
+  render(); renderQuiz();
+})();
+</script>
+</body></html>

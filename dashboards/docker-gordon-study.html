@@ -1,0 +1,357 @@
+<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Docker and Gordon Study Room</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet"><style>
+/* Layout: one study column with a sticky step rail on wide screens; each step = plain words, one diagram, one building example, one check. */
+:root{
+  --bg:#F2F2EC; --panel:#FFFFFF; --ink:#0A0B0A; --body:#2F332E; --muted:#5F655D; --line:#DCDCD4;
+  --accent:#7FB928; --accent-ink:#48651F; --accent-soft:#EEF6E2; --amber:#B9801A; --amber-soft:#FBF1DF; --red:#C23B3B; --red-soft:#FBE9E9;
+  --zone-it:#DCE7F0; --zone-bms:#E4F0D2; --zone-cctv:#EFE6D2; --zone-av:#E9E2F0; --zone-wifi:#F3DFDF; --zone-acc:#DCEEEA;
+  --display:"Inter",Calibri,Arial,sans-serif; --mono:"JetBrains Mono",Consolas,"Courier New",monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0A0B0A; --panel:#101211; --ink:#F2F2EC; --body:#D9D6CA; --muted:#8C9289; --line:#262A26;
+  --accent:#7FB928; --accent-ink:#96D71A; --accent-soft:#1A2410; --amber:#D99B28; --amber-soft:#2A2010; --red:#E06666; --red-soft:#2B1414;
+  --zone-it:#1C2732; --zone-bms:#1E2A14; --zone-cctv:#2B2416; --zone-av:#251E2D; --zone-wifi:#2D1A1A; --zone-acc:#14282A; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0A0B0A; --panel:#101211; --ink:#F2F2EC; --body:#D9D6CA; --muted:#8C9289; --line:#262A26;
+  --accent:#7FB928; --accent-ink:#96D71A; --accent-soft:#1A2410; --amber:#D99B28; --amber-soft:#2A2010; --red:#E06666; --red-soft:#2B1414;
+  --zone-it:#1C2732; --zone-bms:#1E2A14; --zone-cctv:#2B2416; --zone-av:#251E2D; --zone-wifi:#2D1A1A; --zone-acc:#14282A; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--body);font-family:var(--display);font-size:16.5px;line-height:1.6}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 64px}
+h1,h2,h3{color:var(--ink);margin:0;text-wrap:balance}
+h1{font-size:clamp(28px,4.4vw,42px);font-weight:800;letter-spacing:-.025em;line-height:1.08}
+h2{font-size:clamp(22px,2.8vw,28px);font-weight:800;letter-spacing:-.02em;line-height:1.15}
+h3{font-size:17px;font-weight:700}
+p{margin:0}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.wordmark{font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--accent-ink)}
+.lede{max-width:62ch;margin-top:10px;color:var(--body)}
+button{font:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,.zone:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+a{color:var(--accent-ink)}
+
+/* top summary */
+.top{display:grid;grid-template-columns:1.3fr 1fr;gap:24px;align-items:end;margin-top:6px}
+.prog{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.prog .row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.prog .big{font-family:var(--mono);font-size:30px;font-weight:600;color:var(--ink)}
+.bar{height:10px;border-radius:99px;background:var(--line);margin-top:10px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent);border-radius:99px;transition:width .3s}
+.prog small{display:block;margin-top:8px;color:var(--muted);font-size:13.5px}
+
+/* plan timeline */
+.plan{margin-top:24px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.slot{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:4px}
+.slot .t{font-family:var(--mono);font-size:12.5px;color:var(--accent-ink);font-weight:600}
+.slot b{color:var(--ink);font-size:15px}
+.slot span{font-size:13.5px;color:var(--muted)}
+.slot:hover{border-color:var(--accent)}
+
+/* layout */
+.grid{display:grid;grid-template-columns:210px 1fr;gap:32px;margin-top:36px;align-items:start}
+.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);display:flex;flex-direction:column;gap:4px}
+.rail a{display:flex;gap:10px;align-items:center;padding:8px 10px;border-radius:8px;text-decoration:none;color:var(--body);font-size:14.5px}
+.rail a:hover{background:var(--panel)}
+.rail .dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-family:var(--mono);font-size:10.5px;color:var(--muted);flex:0 0 auto}
+.rail a.done .dot{background:var(--accent);border-color:var(--accent);color:#0A0B0A}
+.steps{display:flex;flex-direction:column;gap:28px;min-width:0}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:26px 26px 22px;scroll-margin-top:16px;min-width:0}
+.step .k{font-family:var(--mono);font-size:12.5px;color:var(--accent-ink);font-weight:600;letter-spacing:.06em}
+.step h2{margin-top:6px}
+.step .why{margin-top:10px;max-width:68ch}
+.analogy{margin-top:16px;display:flex;gap:14px;background:var(--accent-soft);border-radius:12px;padding:14px 16px}
+.analogy b{color:var(--ink)}
+.analogy .lbl{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent-ink);white-space:nowrap;padding-top:3px}
+.fig{margin-top:18px;overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--bg);padding:14px}
+.fig svg{display:block;width:100%;min-width:620px;height:auto}
+.fig svg text{font-family:var(--display)}
+.cap{font-size:13.5px;color:var(--muted);margin-top:8px}
+.say{margin-top:16px;border-left:3px solid var(--accent);padding:4px 0 4px 14px}
+.say .lbl{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.say p{margin-top:4px;color:var(--ink)}
+.donebtn{margin-top:20px;display:inline-flex;gap:10px;align-items:center;border:1.5px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:9px 16px;font-weight:600;font-size:14.5px}
+.donebtn .box{width:18px;height:18px;border-radius:5px;border:2px solid var(--muted);display:grid;place-items:center}
+.donebtn[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.donebtn[aria-pressed="true"] .box{background:var(--accent);border-color:var(--accent)}
+.donebtn[aria-pressed="true"] .box::after{content:"";width:8px;height:4px;border-left:2px solid #0A0B0A;border-bottom:2px solid #0A0B0A;transform:rotate(-45deg) translate(1px,-1px)}
+
+/* tables and chips */
+.tbl{margin-top:16px;overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{width:100%;border-collapse:collapse;font-size:14.5px;min-width:560px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--ink);color:var(--bg);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700}
+tr:last-child td{border-bottom:0}
+td.code{font-family:var(--mono);white-space:nowrap;color:var(--ink);font-weight:600}
+.pill{display:inline-block;white-space:nowrap;border-radius:999px;padding:1px 9px;font-size:12px;font-weight:600}
+.p-cov{background:var(--accent-soft);color:var(--accent-ink)}
+.p-par{background:var(--amber-soft);color:var(--amber)}
+.p-gap{background:var(--red-soft);color:var(--red)}
+
+/* zone explorer */
+.zone{cursor:pointer}
+.zone rect{stroke:var(--line);stroke-width:1.5}
+.zone.sel rect{stroke:var(--accent);stroke-width:3}
+.info{margin-top:12px;display:grid;grid-template-columns:auto 1fr;gap:6px 16px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:15px}
+.info .h{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding-top:2px}
+.info .v{color:var(--ink)}
+
+/* FR cards */
+.frs{margin-top:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.fr{border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;background:var(--bg)}
+.fr .n{font-family:var(--mono);font-size:12.5px;color:var(--accent-ink);font-weight:600}
+.fr b{color:var(--ink)}
+.fr .ex{font-size:14px}
+.fr .row{display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--muted);margin-top:auto}
+
+/* quiz */
+.q{border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:12px;background:var(--bg)}
+.q .qt{color:var(--ink);font-weight:600}
+.opts{display:grid;gap:8px;margin-top:10px}
+.opts button{text-align:left;border:1.5px solid var(--line);background:var(--panel);color:var(--body);border-radius:10px;padding:9px 12px;font-size:15px}
+.opts button:hover{border-color:var(--muted)}
+.opts button.right{border-color:var(--accent);background:var(--accent-soft);color:var(--ink)}
+.opts button.wrong{border-color:var(--red);background:var(--red-soft)}
+.fb{margin-top:10px;font-size:14.5px}
+.fb b{color:var(--ink)}
+.score{font-family:var(--mono);color:var(--ink);font-weight:600}
+.reset{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:8px;padding:6px 12px;font-size:13.5px}
+.fine{margin-top:28px;font-size:13px;color:var(--muted);max-width:90ch}
+
+@media (max-width:900px){.grid{grid-template-columns:1fr}.rail{display:none}.top{grid-template-columns:1fr}.plan{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.plan{grid-template-columns:1fr}.step{padding:20px 16px}.analogy{flex-direction:column;gap:4px}.info{grid-template-columns:1fr}}
+@media (max-width:660px){.fig::before{content:"Swipe sideways to see the whole diagram";display:block;font-size:12.5px;color:var(--muted);margin-bottom:8px;position:sticky;left:0}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style></head><body><div class="wrap">
+  <div class="wordmark">Intelligent Environments</div>
+  <div class="top">
+    <div>
+      <h1>Docker and Gordon Study Room</h1>
+      <p class="lede">How to pack any tool into a box that runs the same everywhere, run several boxes as one service, and use Docker's AI assistant and a private local AI. Seven steps. The running example is IE Watch for a 6-person garage,, and a private on-site AI box.</p>
+    </div>
+    <div class="prog" aria-live="polite">
+      <div class="row"><span>Your progress</span><span class="big" id="pnum">0/7</span></div>
+      <div class="bar"><i id="pbar"></i></div>
+      <small id="pnote">Saved in this browser. Start with step 1.</small>
+    </div>
+  </div>
+  <div class="plan" aria-label="90 minutes">
+    <a class="slot" href="#s1"><span class="t">0 to 25 min</span><b>Steps 1 and 2</b><span>Why containers, and images vs containers</span></a>
+    <a class="slot" href="#s3"><span class="t">25 to 50 min</span><b>Steps 3 and 4</b><span>Ports and storage, then Compose</span></a>
+    <a class="slot" href="#s5"><span class="t">50 to 75 min</span><b>Steps 5 and 6</b><span>Gordon and MCP, then local AI</span></a>
+    <a class="slot" href="#s8"><span class="t">75 to 90 min</span><b>Step 7 and self-test</b><span>Keeping containers secure</span></a>
+  </div>
+  <div class="grid">
+    <nav class="rail" aria-label="Steps" id="rail"></nav>
+    <main class="steps">
+
+      <section class="step" id="s1" data-step="1" data-name="Why containers">
+        <div class="k">STEP 1 OF 7 · WHY CONTAINERS</div>
+        <h2>"It works on my machine" is the problem Docker solves</h2>
+        <p class="why">Software needs the right versions of many other pieces to run. Install it on a different PC and something is missing or the wrong version, so it breaks. A <b>container</b> packs the software together with everything it needs. The same container runs the same way on your laptop, on a server and at a client's site.</p>
+        <div class="analogy"><span class="lbl">Think of it as</span><p>A shipping container. The ship, the crane and the lorry do not care what is inside; the box is a standard size, so it moves anywhere unchanged.</p></div>
+        <div class="fig">
+          <svg viewBox="0 0 760 210" role="img" aria-label="One container runs the same on three machines">
+            <rect x="20" y="40" width="230" height="140" rx="12" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2.5"/>
+            <text x="36" y="66" font-size="12" font-weight="700" fill="var(--muted)" letter-spacing="1.5">ONE CONTAINER</text>
+            <rect x="36" y="78" width="198" height="26" rx="6" fill="var(--panel)"/><text x="48" y="96" font-size="13" fill="var(--ink)">The app (e.g. IE Watch dashboard)</text>
+            <rect x="36" y="110" width="198" height="26" rx="6" fill="var(--panel)"/><text x="48" y="128" font-size="13" fill="var(--ink)">Libraries it needs</text>
+            <rect x="36" y="142" width="198" height="26" rx="6" fill="var(--panel)"/><text x="48" y="160" font-size="13" fill="var(--ink)">Settings and start command</text>
+            <g font-size="14" font-weight="700" fill="var(--ink)">
+              <rect x="330" y="30" width="190" height="44" rx="10" fill="var(--zone-it)"/><text x="346" y="58">Your laptop</text>
+              <rect x="330" y="86" width="190" height="44" rx="10" fill="var(--zone-cctv)"/><text x="346" y="114">IE server</text>
+              <rect x="330" y="142" width="190" height="44" rx="10" fill="var(--zone-bms)"/><text x="346" y="170">Garage office PC</text>
+            </g>
+            <g stroke="var(--accent)" stroke-width="3"><line x1="252" y1="110" x2="326" y2="52"/><line x1="252" y1="110" x2="326" y2="108"/><line x1="252" y1="110" x2="326" y2="164"/></g>
+            <text x="550" y="100" font-size="15" font-weight="700" fill="var(--accent-ink)">Same result</text>
+            <text x="550" y="122" font-size="13" fill="var(--body)">every time,</text>
+            <text x="550" y="140" font-size="13" fill="var(--body)">in minutes</text>
+          </svg>
+        </div>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"A container packages an application with everything it depends on, so it runs identically on any machine. That is how we give every client the same tested build."</p></div>
+        <button class="donebtn" data-done="1" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <section class="step" id="s2" data-step="2" data-name="Images and containers">
+        <div class="k">STEP 2 OF 7 · IMAGES, CONTAINERS, REGISTRIES</div>
+        <h2>Recipe, cake, and the bakery shelf</h2>
+        <p class="why">A <b>Dockerfile</b> is the written recipe. Building it gives an <b>image</b>: a frozen, read-only package. Running an image gives a <b>container</b>: a live copy that is actually working. One image can run as many containers. Images are stored on a <b>registry</b> such as Docker Hub, where you pull ready-made ones.</p>
+        <div class="fig">
+          <svg viewBox="0 0 760 200" role="img" aria-label="Dockerfile builds an image, image runs as containers, registry stores images">
+            <defs><marker id="d2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker></defs>
+            <rect x="20" y="40" width="150" height="70" rx="10" fill="var(--zone-it)"/><text x="36" y="68" font-size="15" font-weight="700" fill="var(--ink)">Dockerfile</text><text x="36" y="90" font-size="12.5" fill="var(--body)">the recipe</text>
+            <rect x="240" y="40" width="150" height="70" rx="10" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/><text x="256" y="68" font-size="15" font-weight="700" fill="var(--ink)">Image</text><text x="256" y="90" font-size="12.5" fill="var(--body)">the frozen cake</text>
+            <rect x="460" y="20" width="140" height="44" rx="10" fill="var(--zone-bms)"/><text x="476" y="47" font-size="14" font-weight="700" fill="var(--ink)">Container 1</text>
+            <rect x="460" y="86" width="140" height="44" rx="10" fill="var(--zone-bms)"/><text x="476" y="113" font-size="14" font-weight="700" fill="var(--ink)">Container 2</text>
+            <rect x="240" y="150" width="150" height="40" rx="10" fill="var(--zone-av)"/><text x="256" y="175" font-size="13.5" font-weight="700" fill="var(--ink)">Docker Hub registry</text>
+            <line x1="174" y1="75" x2="236" y2="75" stroke="var(--muted)" stroke-width="3" marker-end="url(#d2)"/><text x="182" y="66" font-size="11.5" fill="var(--muted)">build</text>
+            <line x1="394" y1="66" x2="456" y2="44" stroke="var(--muted)" stroke-width="3" marker-end="url(#d2)"/><line x1="394" y1="84" x2="456" y2="106" stroke="var(--muted)" stroke-width="3" marker-end="url(#d2)"/><text x="404" y="100" font-size="11.5" fill="var(--muted)">run</text>
+            <line x1="315" y1="146" x2="315" y2="114" stroke="var(--muted)" stroke-width="3" marker-end="url(#d2)"/><text x="324" y="136" font-size="11.5" fill="var(--muted)">pull</text>
+            <text x="630" y="60" font-size="12.5" fill="var(--body)">Running copies.</text><text x="630" y="78" font-size="12.5" fill="var(--body)">Delete one and</text><text x="630" y="96" font-size="12.5" fill="var(--body)">the image is safe.</text>
+          </svg>
+        </div>
+        <div class="tbl"><table>
+          <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+          <tbody>
+            <tr><td class="code">docker pull nginx</td><td>Download the nginx web server image from Docker Hub</td></tr>
+            <tr><td class="code">docker run nginx</td><td>Start a container from that image</td></tr>
+            <tr><td class="code">docker ps</td><td>List the containers that are running</td></tr>
+            <tr><td class="code">docker build -t ie-tool .</td><td>Build an image called ie-tool from the Dockerfile in this folder</td></tr>
+          </tbody>
+        </table></div>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"A Dockerfile builds an image, an image runs as one or many containers, and images live in a registry like Docker Hub."</p></div>
+        <button class="donebtn" data-done="2" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <section class="step" id="s3" data-step="3" data-name="Ports and storage">
+        <div class="k">STEP 3 OF 7 · PORTS AND STORAGE</div>
+        <h2>Doors in, and a cupboard that survives</h2>
+        <p class="why">A container is sealed by default. To reach it you open a <b>port</b>: a numbered door from the machine into the container. A container also forgets everything when it is deleted, so anything worth keeping, such as logs or a database, goes in a <b>volume</b>: storage that lives outside the container.</p>
+        <div class="analogy"><span class="lbl">Think of it as</span><p>A hotel room. The <b>port</b> is the room number reception gives a guest. The <b>volume</b> is the safe in the basement: the guest checks out, the safe keeps its contents.</p></div>
+        <div class="fig">
+          <svg viewBox="0 0 760 190" role="img" aria-label="Port mapping and volume">
+            <rect x="20" y="30" width="300" height="140" rx="14" fill="var(--zone-it)"/><text x="36" y="56" font-size="12" font-weight="700" fill="var(--muted)" letter-spacing="1.5">THE MACHINE</text>
+            <rect x="140" y="70" width="160" height="80" rx="10" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/><text x="156" y="98" font-size="14" font-weight="700" fill="var(--ink)">Container</text><text x="156" y="120" font-size="12.5" fill="var(--body)">web app on port 80</text>
+            <rect x="36" y="96" width="70" height="30" rx="6" fill="var(--panel)" stroke="var(--line)"/><text x="71" y="116" text-anchor="middle" font-size="12.5" font-family="var(--mono)" fill="var(--ink)">8080</text>
+            <line x1="106" y1="111" x2="138" y2="111" stroke="var(--accent)" stroke-width="3"/>
+            <rect x="420" y="70" width="190" height="80" rx="10" fill="var(--zone-cctv)"/><text x="436" y="98" font-size="14" font-weight="700" fill="var(--ink)">Volume: ie-logs</text><text x="436" y="120" font-size="12.5" fill="var(--body)">kept when the container goes</text>
+            <line x1="300" y1="110" x2="416" y2="110" stroke="var(--muted)" stroke-width="3" stroke-dasharray="6 5"/>
+          </svg>
+        </div>
+        <div class="tbl"><table>
+          <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+          <tbody><tr><td class="code">docker run -p 8080:80 -v ie-logs:/data nginx</td><td>Open machine port 8080 to container port 80, and keep /data in a volume called ie-logs</td></tr></tbody>
+        </table></div>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"Ports let traffic in, volumes keep data when containers are replaced. Open only the ports you need."</p></div>
+        <button class="donebtn" data-done="3" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <section class="step" id="s4" data-step="4" data-name="Docker Compose">
+        <div class="k">STEP 4 OF 7 · DOCKER COMPOSE</div>
+        <h2>Several containers, one command</h2>
+        <p class="why">Real services are made of parts: something that collects data, a database, a dashboard. <b>Docker Compose</b> describes all the parts in one file, <span class="mono">compose.yaml</span>, and starts them together with one command. This file is how one tested build can be repeated for every client.</p>
+        <div class="fig">
+          <svg viewBox="0 0 760 190" role="img" aria-label="Compose file starts three containers">
+            <rect x="20" y="30" width="220" height="140" rx="12" fill="var(--panel)" stroke="var(--line)"/>
+            <g font-family="var(--mono)" font-size="12.5" fill="var(--ink)"><text x="34" y="56">services:</text><text x="48" y="78">collector:</text><text x="48" y="100">database:</text><text x="48" y="122">dashboard:</text><text x="62" y="144" fill="var(--muted)">ports: ["8080:80"]</text></g>
+            <text x="270" y="104" font-size="13" font-weight="700" fill="var(--accent-ink)">docker compose up -d</text>
+            <line x1="270" y1="112" x2="420" y2="112" stroke="var(--accent)" stroke-width="3"/>
+            <g font-size="14" font-weight="700" fill="var(--ink)">
+              <rect x="440" y="24" width="200" height="40" rx="10" fill="var(--zone-bms)"/><text x="456" y="50">collector</text>
+              <rect x="440" y="76" width="200" height="40" rx="10" fill="var(--zone-cctv)"/><text x="456" y="102">database</text>
+              <rect x="440" y="128" width="200" height="40" rx="10" fill="var(--zone-av)"/><text x="456" y="154">dashboard</text>
+            </g>
+            <text x="650" y="100" font-size="12.5" fill="var(--body)">= IE Watch</text>
+          </svg>
+        </div>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"Compose describes a whole service in one file, so we install the same tested IE Watch stack at every client with one command."</p></div>
+        <button class="donebtn" data-done="4" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <section class="step" id="s5" data-step="5" data-name="Gordon and MCP">
+        <div class="k">STEP 5 OF 7 · GORDON AND THE MCP TOOLKIT</div>
+        <h2>An AI assistant that knows Docker, and a safe way to give AI tools</h2>
+        <p class="why"><b>Gordon</b> is the AI assistant inside Docker Desktop. Ask it why a container will not start, or to write a compose file, and it explains and fixes. It can run Docker commands, but only when you allow it. The <b>MCP Toolkit</b> connects AI assistants such as Gordon to tools (GitHub, files, databases), each tool running in its own container with only the access you give it.</p>
+        <div class="analogy"><span class="lbl">Think of it as</span><p>An apprentice who knows Docker inside out. Gordon proposes the fix; you approve before anything changes. MCP is the set of keys you hand the apprentice, one key per room, never the master key.</p></div>
+        <div class="fig">
+          <svg viewBox="0 0 760 180" role="img" aria-label="You, Gordon, MCP Toolkit, tools">
+            <defs><marker id="d5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker></defs>
+            <rect x="20" y="60" width="120" height="60" rx="10" fill="var(--zone-it)"/><text x="36" y="96" font-size="15" font-weight="700" fill="var(--ink)">You</text>
+            <rect x="200" y="60" width="160" height="60" rx="10" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/><text x="216" y="88" font-size="15" font-weight="700" fill="var(--ink)">Gordon</text><text x="216" y="108" font-size="12" fill="var(--body)">asks before it acts</text>
+            <rect x="420" y="60" width="140" height="60" rx="10" fill="var(--zone-cctv)"/><text x="436" y="88" font-size="15" font-weight="700" fill="var(--ink)">MCP Toolkit</text><text x="436" y="108" font-size="12" fill="var(--body)">one key per tool</text>
+            <g font-size="13" font-weight="600" fill="var(--ink)"><rect x="620" y="20" width="120" height="34" rx="8" fill="var(--zone-bms)"/><text x="634" y="42">GitHub</text><rect x="620" y="73" width="120" height="34" rx="8" fill="var(--zone-bms)"/><text x="634" y="95">Files</text><rect x="620" y="126" width="120" height="34" rx="8" fill="var(--zone-bms)"/><text x="634" y="148">Docker</text></g>
+            <g stroke="var(--muted)" stroke-width="2.5" marker-end="url(#d5)"><line x1="142" y1="90" x2="196" y2="90"/><line x1="362" y1="90" x2="416" y2="90"/><line x1="562" y1="80" x2="616" y2="40"/><line x1="562" y1="90" x2="616" y2="90"/><line x1="562" y1="100" x2="616" y2="140"/></g>
+          </svg>
+        </div>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"Gordon is Docker's built-in AI assistant; the MCP Toolkit gives AI assistants controlled, per-tool access, which is least privilege applied to AI."</p></div>
+        <button class="donebtn" data-done="5" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <section class="step" id="s6" data-step="6" data-name="Local AI">
+        <div class="k">STEP 6 OF 7 · DOCKER MODEL RUNNER</div>
+        <h2>A private AI that never leaves the building</h2>
+        <p class="why"><b>Docker Model Runner</b> downloads an AI language model and runs it on a local machine. Questions and documents stay on that machine; nothing goes to a cloud AI provider. That is the idea behind a private on-site AI box, and the answer to a bank CISO who asks where client data goes.</p>
+        <div class="fig">
+          <svg viewBox="0 0 760 200" role="img" aria-label="Private AI box inside the client building">
+            <rect x="20" y="20" width="460" height="160" rx="14" fill="var(--zone-bms)"/>
+            <text x="36" y="46" font-size="12" font-weight="700" fill="var(--muted)" letter-spacing="1.5">CLIENT BUILDING</text>
+            <rect x="40" y="70" width="140" height="80" rx="10" fill="var(--panel)"/><text x="56" y="100" font-size="14" font-weight="700" fill="var(--ink)">Staff PC</text><text x="56" y="122" font-size="12" fill="var(--body)">"What is our</text><text x="56" y="138" font-size="12" fill="var(--body)">leaver process?"</text>
+            <rect x="260" y="60" width="200" height="100" rx="10" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/><text x="276" y="88" font-size="14" font-weight="700" fill="var(--ink)">Private AI Box</text><text x="276" y="110" font-size="12" fill="var(--body)">Docker Model Runner</text><text x="276" y="128" font-size="12" fill="var(--body)">+ the client's own policies</text>
+            <line x1="182" y1="110" x2="256" y2="110" stroke="var(--accent)" stroke-width="3"/>
+            <rect x="560" y="70" width="180" height="80" rx="10" fill="var(--zone-wifi)"/><text x="576" y="100" font-size="14" font-weight="700" fill="var(--ink)">Cloud AI services</text><text x="576" y="122" font-size="12" fill="var(--body)">not used for this data</text>
+            <line x1="480" y1="110" x2="556" y2="110" stroke="var(--red)" stroke-width="3" stroke-dasharray="7 6"/><text x="490" y="100" font-size="20" font-weight="800" fill="var(--red)">X</text>
+          </svg>
+        </div>
+        <div class="tbl"><table>
+          <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+          <tbody>
+            <tr><td class="code">docker model pull ai/smollm2</td><td>Download a small model from Docker Hub's ai/ collection</td></tr>
+            <tr><td class="code">docker model run ai/smollm2</td><td>Start it and chat with it locally</td></tr>
+          </tbody>
+        </table></div>
+        <p class="cap">Model names change; check the ai/ collection on Docker Hub for current ones. Bigger models need more memory and ideally a graphics card.</p>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"Docker Model Runner runs the AI model on the client's own hardware, so confidential documents never leave the building."</p></div>
+        <button class="donebtn" data-done="6" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <section class="step" id="s7" data-step="7" data-name="Secure containers">
+        <div class="k">STEP 7 OF 7 · KEEP CONTAINERS SECURE</div>
+        <h2>Containers are software too. They need patching and limits.</h2>
+        <p class="why">A container image can carry old, vulnerable libraries. A container running as the all-powerful root user can do far more damage if it is broken into. These five habits keep IE's builds safe, and each maps to an ISO 27001 control you can show an auditor.</p>
+        <div class="tbl"><table>
+          <thead><tr><th>Habit</th><th>Why</th><th>ISO 27001</th></tr></thead>
+          <tbody>
+            <tr><td>Use official or hardened images, pinned to a version</td><td>You know what you are running and it does not change silently</td><td class="code">A.8.9</td></tr>
+            <tr><td>Scan images for known flaws (docker scout)</td><td>Finds vulnerable libraries before a client gets them</td><td class="code">A.8.8</td></tr>
+            <tr><td>Do not run containers as root</td><td>Limits damage if one is compromised</td><td class="code">A.8.2</td></tr>
+            <tr><td>Never put passwords or keys inside an image</td><td>Images get copied and shared</td><td class="code">A.5.17</td></tr>
+            <tr><td>Open only the ports you need</td><td>Smaller attack surface</td><td class="code">A.8.20</td></tr>
+          </tbody>
+        </table></div>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"Pin and scan images, never run as root, keep secrets out of images, expose only needed ports; each one is evidence for an ISO control."</p></div>
+        <button class="donebtn" data-done="7" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <section class="step" id="s8">
+        <div class="k">SELF-TEST · 6 QUESTIONS</div>
+        <h2>Check yourself</h2>
+        <p style="margin-top:12px">Score: <span class="score" id="qscore">0</span> <button class="reset" id="qreset" type="button">Reset answers</button></p>
+        <div id="quiz"></div>
+      </section>
+      <p class="fine">Docker Desktop is free for businesses under 250 staff and USD 10 million revenue (Docker Personal). Gordon, Model Runner and MCP Toolkit features change often; check the Docker Desktop release notes for your version. Part of IE-DRILL-005 v3.2 IE Drill Room, Intelligent Environments.</p>
+    </main>
+  </div>
+</div>
+<script>
+(function(){
+  var KEY='ie-docker-study.v1', st={done:{},quiz:{}}, QS=[["What is the difference between an image and a container?", ["They are the same thing", "An image is the frozen package; a container is a running copy of it", "A container is stored on Docker Hub", "An image only runs on Linux"], 1, "The image is built once from the Dockerfile and stays read-only. Each docker run starts a new container from it."], ["Your IE Watch dashboard runs in a container on port 80. How do staff reach it on the machine's port 8080?", ["-v 8080:80", "-p 8080:80", "docker pull 8080", "It is reachable automatically"], 1, "-p maps a machine port to a container port. -v is for volumes (storage)."], ["You delete and recreate the database container. How do you keep its data?", ["Store it in a volume", "Store it in the image", "Use a bigger container", "Run it as root"], 0, "Containers forget everything when deleted. A volume lives outside the container and survives."], ["What starts collector, database and dashboard together with one command?", ["Gordon", "Docker Compose", "Model Runner", "Docker Scout"], 1, "docker compose up -d reads compose.yaml and starts every service in it."], ["A bank CISO asks where client documents go when your AI reads them. Which tool lets you answer 'nowhere'?", ["A cloud chatbot", "Docker Model Runner on a local box", "Oxylabs", "The MCP Toolkit alone"], 1, "Model Runner runs the model on local hardware, so the documents never leave the building."], ["Which habit limits the damage if a container is broken into?", ["Running it as root", "Not running it as root", "Putting the admin password in the image", "Opening all ports"], 1, "A non-root container has fewer rights, so an attacker can do less (ISO A.8.2)."]];
+  try{var raw=localStorage.getItem(KEY); if(raw){var p=JSON.parse(raw); if(p&&p.done) st=p; if(!st.quiz) st.quiz={};}}catch(e){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
+  var secs=[].slice.call(document.querySelectorAll('section[data-step]')), N=secs.length, names=secs.map(function(s){return s.dataset.name;});
+  var rail=document.getElementById('rail');
+  names.forEach(function(n,i){var a=document.createElement('a');a.href='#s'+(i+1);a.dataset.s=i+1;a.innerHTML='<span class="dot">'+(i+1)+'</span>'+n;rail.appendChild(a);});
+  var q=document.createElement('a');q.href='#s8';q.innerHTML='<span class="dot">?</span>Self-test';rail.appendChild(q);
+  function render(){
+    var n=0; for(var i=1;i<=N;i++){ if(st.done[i]) n++; }
+    document.getElementById('pnum').textContent=n+'/'+N;
+    document.getElementById('pbar').style.width=(n/N*100)+'%';
+    var next=0; for(var j=1;j<=N;j++){ if(!st.done[j]){next=j;break;} }
+    document.getElementById('pnote').textContent= n===N ? 'All steps done. Finish with the self-test.' : 'Saved in this browser. Next: step '+next+', '+names[next-1]+'.';
+    document.querySelectorAll('.donebtn').forEach(function(b){b.setAttribute('aria-pressed',st.done[b.dataset.done]?'true':'false');});
+    rail.querySelectorAll('a[data-s]').forEach(function(a){a.classList.toggle('done',!!st.done[a.dataset.s]);});
+  }
+  document.querySelectorAll('.donebtn').forEach(function(b){b.addEventListener('click',function(){var k=b.dataset.done; st.done[k]=!st.done[k]; save(); render();});});
+  var quiz=document.getElementById('quiz');
+  function renderQuiz(){
+    var sc=0;
+    quiz.innerHTML=QS.map(function(qq,i){
+      var a=st.quiz[i]; if(a===qq[2]) sc++;
+      var opts=qq[1].map(function(o,j){var c=''; if(a!==undefined){ if(j===qq[2]) c='right'; else if(j===a) c='wrong'; } return '<button type="button" class="'+c+'" data-q="'+i+'" data-a="'+j+'">'+o+'</button>';}).join('');
+      var fb=a===undefined?'':'<p class="fb"><b>'+(a===qq[2]?'Right.':'Not quite.')+'</b> '+qq[3]+'</p>';
+      return '<div class="q"><p class="qt">'+(i+1)+'. '+qq[0]+'</p><div class="opts">'+opts+'</div>'+fb+'</div>';
+    }).join('');
+    document.getElementById('qscore').textContent=sc+' / '+QS.length;
+  }
+  quiz.addEventListener('click',function(e){var b=e.target.closest('button[data-q]'); if(!b) return; var i=+b.dataset.q; if(st.quiz[i]!==undefined) return; st.quiz[i]=+b.dataset.a; save(); renderQuiz();});
+  document.getElementById('qreset').addEventListener('click',function(){st.quiz={}; save(); renderQuiz();});
+  render(); renderQuiz();
+})();
+</script></body></html>
