@@ -25,7 +25,16 @@ Each subject is a working paper. I take a position, Polly, my AI assistant, chal
 
 ## Dashboards I've built
 
-Interactive study pages with diagrams and self-tests, plus a GRC tool. See [dashboards](dashboards/README.md).
+Interactive study pages with diagrams and self-tests. Click to open them live in your browser:
+
+| Dashboard | What it teaches |
+| --- | --- |
+| [ISA/IEC 62443 for building systems](https://cyberhak44.github.io/ai-learning-log/dashboards/iec62443-study.html) | Zones and conduits, security levels, the seven foundational requirements, the risk workflow |
+| [Fortinet FortiGate essentials](https://cyberhak44.github.io/ai-learning-log/dashboards/fortinet-nse4-study.html) | Policies, NAT, security profiles, SSL inspection, IPsec VPN, hardening |
+| [Docker, Gordon and local AI](https://cyberhak44.github.io/ai-learning-log/dashboards/docker-gordon-study.html) | Containers, Compose, the MCP Toolkit, running AI models locally |
+| [Web data and the law](https://cyberhak44.github.io/ai-learning-log/dashboards/web-data-study.html) | Proxies, scraping APIs, brand look-alike monitoring, the UAE PDPL line |
+
+Also built: [grc-workbench](https://github.com/CyberHak44/grc-workbench), a browser-based GRC tool. More detail in [dashboards](dashboards/README.md).
 
 ## Rules I work to
 

@@ -1,6 +1,6 @@
 # Dashboards and study pages
 
-Pages I built while learning, each a single HTML file. Open one in a browser, or use the live links once GitHub Pages is switched on for this repository. Progress and quiz answers are saved in your own browser only.
+Pages I built while learning, each a single HTML file. Use the live links to open each page in your browser. Progress and quiz answers are saved in your own browser only.
 
 | Page | What it teaches | Live link |
 | --- | --- | --- |
