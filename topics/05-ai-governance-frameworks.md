@@ -1,6 +1,6 @@
 # AI governance frameworks
 
-Status: framework, 2026-11-03. Filled in as we go.
+Status: round 1 started 2026-11-04. Filled in as we go.
 
 ## The question
 
@@ -24,7 +24,7 @@ Hakim takes a position, Polly, my AI assistant, challenges it, and we record whe
 | # | Position | Challenge | Where we landed |
 | --- | --- | --- | --- |
 | 1 | A UAE SME does not need an AI framework | It needs a one-page AI policy now; the full framework when clients or regulators ask | _to fill_ |
-| 2 | _to fill_ | _to fill_ | _to fill_ |
+| 2 | Companies cut corners to be first to market; the biggest simply pay settlements. How will that ever change? | True for the giants, where settlements are small against revenue. It changes when being insecure costs more than being second | Four levers move the cost: fines scaled to global turnover (GDPR up to 4 percent, EU AI Act up to 7 percent for banned practices); personal liability for executives (EU NIS2, UK banking accountability regime); buyers demanding assurance (ISO/IEC 42001, SOC 2) before they can buy; and insurers pricing uncontrolled risk. For regulated buyers, security is the entry ticket, not the brake |
 | 3 | _to fill_ | _to fill_ | _to fill_ |
 
 ## How I apply it

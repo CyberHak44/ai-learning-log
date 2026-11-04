@@ -21,7 +21,8 @@ Each subject is a working paper. I take a position, Polly, my AI assistant, chal
 | [Agentic AI and human oversight](topics/02-agentic-ai-and-human-oversight.md) | When AI takes actions on its own, where must a person step in? | Framework |
 | [The AI tools compared](topics/03-ai-tools-compared.md) | Polly (my AI assistant), Cursor, Grok, Gemini, Copilot: which tool for which job, and where does the data go? | Framework |
 | [AI as a force multiplier](topics/04-ai-as-a-force-multiplier.md) | Where does AI really let one person do the work of several? | Framework |
-| [AI governance frameworks](topics/05-ai-governance-frameworks.md) | ISO/IEC 42001, NIST AI RMF, the EU AI Act and CBUAE guidance, and how they fit with ISO 27001 | Framework |
+| [AI governance frameworks](topics/05-ai-governance-frameworks.md) | ISO/IEC 42001, NIST AI RMF, the EU AI Act and CBUAE guidance, and how they fit with ISO 27001 | Round 1 started |
+| [AI and privacy](topics/06-ai-and-privacy.md) | With microphones in cars, phones and rooms, how is privacy protected, and where does it stop? | Round 1 started |
 
 ## Dashboards I've built
 
@@ -56,6 +57,7 @@ Also built: [grc-workbench](https://github.com/CyberHak44/grc-workbench), a brow
 | 2026-11-02 | Web data and the law | How proxies and scraping APIs work, and where the UAE PDPL draws the line: no "legitimate interests" basis, so no harvesting personal data | Study notes |
 | 2026-11-03 | AI guardrails and agentic AI | Started five working papers: guardrails, human oversight of AI agents, the main AI tools, AI as a force multiplier, and AI governance frameworks | [topics](topics/) |
 | 2026-11-03 | AI guardrails, round 1 | Authorisation beats content filtering; AI preps, people act. Jurisdiction follows where people are and where you trade, not nationality | [01-ai-guardrails](topics/01-ai-guardrails.md) |
+| 2026-11-04 | Zero trust, speed and privacy | Zero trust is not zero autonomy; the risk is complacency. Liability, procurement and insurance make insecurity cost more than being second. Control capture and retention, not speech | [01](topics/01-ai-guardrails.md), [05](topics/05-ai-governance-frameworks.md), [06](topics/06-ai-and-privacy.md) |
 
 ## Author
 

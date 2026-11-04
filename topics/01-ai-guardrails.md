@@ -27,8 +27,18 @@ Hakim takes a position, Polly, my AI assistant, challenges it, and we record whe
 | 3 | Know your client: map the law to the client, and design to the strictest standard | GDPR follows where people are located and where you trade, not nationality | Map each client's law by establishment, where its data subjects are and its sector (PDPL, DIFC, ADGM, health, CBUAE, GDPR where it reaches). Default to the strictest standard that applies |
 | 4 | Offensive tools need an IT policy with levels of authorisation; verify who is asking, not what is asked | To an AI, a pen test and an attack look the same. Accounts can be phished | Authorisation over content: phishing-resistant MFA, role-based access, a signed scope letter for offensive work, two-person approval for high-risk actions |
 | 5 | If AI does everything, where does it stop? | Accountability needs legal personhood, and AI has none | AI works in the prep zone. A named person commands the action zone: sends, payments, deletes, publishing, configuration changes |
+| 6 | We are building trust in AI, and once trust is built people hand over the keys. Do we need zero trust forever? | Zero trust is not zero autonomy: it means verifying every request, not refusing to delegate. The real risk is automation bias, people slowly stop checking | Zero trust forever, not zero autonomy. AI earns autonomy tier by tier on measured evidence and can be dropped back at once. Irreversible actions stay with a named human permanently. Design against complacency: seeded errors, rotating reviewers, drift monitoring, reconciliation to source systems, a kill switch |
 
-Round 1 completed 2026-11-03.
+Round 1 completed 2026-11-03. Row 6 added 2026-11-04.
+
+### Voices from the field
+
+A Computer Weekly panel on agentic AI in cyber security reached the same place:
+
+- Mohammad Al Rais, senior director of group IT at ENOC, described agentic AI as "automation with a brain": the next step in automation, run under controls, not a replacement for human expertise.
+- Noman Rasheed, CIO at Dubai Islamic Bank, argued that AI mistakes should be handled like human error, with controls rather than by removing people, and that zero trust applies equally to humans, machines and AI. His example: a poisoned model showing the CFO wrong numbers, with no human left to verify.
+
+Source: [Computer Weekly: Cyber security without humans? The rise of agentic AI](https://www.computerweekly.com/news/366651209/Cyber-security-without-humans-The-rise-of-agentic-AI)
 
 ## How I apply it
 
@@ -43,6 +53,8 @@ Round 1 completed 2026-11-03.
 - [x] A person checks AI output before it is sent, published or acted on
 - [x] Log what AI tools do, so actions can be traced
 - [ ] Phishing-resistant MFA on every account that can use AI tools or approve actions
+- [ ] Autonomy tiers defined per AI use, with the evidence needed to move up and the triggers to move down
+- [ ] Complacency controls: seeded test errors, reviewer rotation, reconciliation of AI figures to source systems
 
 ## Open questions
 
@@ -51,5 +63,6 @@ Round 1 completed 2026-11-03.
 
 ## Sources
 
+- [Computer Weekly: Cyber security without humans? The rise of agentic AI](https://www.computerweekly.com/news/366651209/Cyber-security-without-humans-The-rise-of-agentic-AI)
 - [OWASP Top 10 for LLM Applications 2025, practical guide (Gravitee)](https://www.gravitee.io/blog/owasp-top-10-for-llm-applications-2025-a-practical-guide)
 - [OWASP Top 10 LLM risks explained (Outpost24)](https://outpost24.com/blog/owasp-top-10-llm-risks-explained/)
