@@ -37,6 +37,10 @@ Interactive study pages with diagrams and self-tests. Click to open them live in
 
 Also built: [grc-workbench](https://github.com/CyberHak44/grc-workbench), a browser-based GRC tool. More detail in [dashboards](dashboards/README.md).
 
+## Draft templates
+
+Working drafts that turn these subjects into documents a client could use, each open to challenge. See [templates](templates/README.md).
+
 ## Rules I work to
 
 1. A person reviews and signs off everything that leaves my desk. AI drafts; I decide.

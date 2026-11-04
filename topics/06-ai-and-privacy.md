@@ -38,6 +38,11 @@ Hakim takes a position, Polly, my AI assistant, challenges it, and we record whe
 | 1 | Listening devices are everywhere; where does it stop? | It will not stop by banning devices | Three lines: law (consent and lawful basis under the PDPL), design (on-device processing, microphones off by default, short retention), and organisation (no sensitive conversations in connected cars or near smart speakers, as phones are kept out of board rooms) |
 | 2 | At least 20 percent of life must stay private in the age of AI | Twenty percent of what? A percentage cannot be audited | A defined private-by-default zone that can be tested: health, faith, children, and private conversations at home and in vehicles are never collected or processed |
 | 3 | An offhand remark between consenting adults cannot be policed | Agreed: the remark is not the control point | Control capture, retention and retrieval, not speech |
+| 4 | What is the argument for recording every conversation? | The strongest case: regulators require it for trading lines, evidence protects the innocent, surveillance catches fraud and harassment, people behave better when recorded, and AI turns meetings into notes | Record by purpose, never by default. Record where the law requires it, where safety requires it, or where both parties agree for a stated reason, with notice, short retention and controlled access. Everywhere else the default is not recorded. Every recording is a liability: it can be breached, demanded in a lawsuit, or requested by the person it is about |
+
+## Draft templates
+
+The [templates](../templates/README.md) folder turns this subject into a transport policy, a vendor checklist, a leadership report and an executive briefing, each open to challenge.
 
 ## Voices from the field
 
