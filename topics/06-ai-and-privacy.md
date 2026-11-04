@@ -58,5 +58,6 @@ Hakim takes a position, Polly, my AI assistant, challenges it, and we record whe
 
 ## Sources
 
-- [Mozilla: cars are the worst product category for privacy (2023)](https://foundation.mozilla.org/en/privacynotincluded/articles/its-official-cars-are-the-worst-product-category-we-have-ever-reviewed-for-privacy/)
+- [Mozilla review: 25 car brands failed basic privacy tests, 2023 (Engadget)](https://www.engadget.com/tesla-tops-mozillas-list-of-creepiest-carmakers-but-25-brands-failed-basic-data-privacy-tests-202017058.html)
+- [Schneier on Security: cars have terrible data privacy](https://www.schneier.com/blog/archives/2023/09/cars-have-terrible-data-privacy.html)
 - [Make it in the Emirates 2026 (WAM)](https://www.wam.ae/en/article/177cudj-largest-ever-make-the-emirates-opens-abu-dhabi)
