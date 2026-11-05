@@ -1,0 +1,391 @@
+<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Secure Your Own Firm</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet"><style>
+/* Layout: one study column with a sticky step rail on wide screens; each step = plain words, one diagram, one building example, one check. */
+:root{
+  --bg:#F2F2EC; --panel:#FFFFFF; --ink:#0A0B0A; --body:#2F332E; --muted:#5F655D; --line:#DCDCD4;
+  --accent:#7FB928; --accent-ink:#48651F; --accent-soft:#EEF6E2; --amber:#B9801A; --amber-soft:#FBF1DF; --red:#C23B3B; --red-soft:#FBE9E9;
+  --zone-it:#DCE7F0; --zone-bms:#E4F0D2; --zone-cctv:#EFE6D2; --zone-av:#E9E2F0; --zone-wifi:#F3DFDF; --zone-acc:#DCEEEA;
+  --display:"Inter",Calibri,Arial,sans-serif; --mono:"JetBrains Mono",Consolas,"Courier New",monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0A0B0A; --panel:#101211; --ink:#F2F2EC; --body:#D9D6CA; --muted:#8C9289; --line:#262A26;
+  --accent:#7FB928; --accent-ink:#96D71A; --accent-soft:#1A2410; --amber:#D99B28; --amber-soft:#2A2010; --red:#E06666; --red-soft:#2B1414;
+  --zone-it:#1C2732; --zone-bms:#1E2A14; --zone-cctv:#2B2416; --zone-av:#251E2D; --zone-wifi:#2D1A1A; --zone-acc:#14282A; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0A0B0A; --panel:#101211; --ink:#F2F2EC; --body:#D9D6CA; --muted:#8C9289; --line:#262A26;
+  --accent:#7FB928; --accent-ink:#96D71A; --accent-soft:#1A2410; --amber:#D99B28; --amber-soft:#2A2010; --red:#E06666; --red-soft:#2B1414;
+  --zone-it:#1C2732; --zone-bms:#1E2A14; --zone-cctv:#2B2416; --zone-av:#251E2D; --zone-wifi:#2D1A1A; --zone-acc:#14282A; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--body);font-family:var(--display);font-size:16.5px;line-height:1.6}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 64px}
+h1,h2,h3{color:var(--ink);margin:0;text-wrap:balance}
+h1{font-size:clamp(28px,4.4vw,42px);font-weight:800;letter-spacing:-.025em;line-height:1.08}
+h2{font-size:clamp(22px,2.8vw,28px);font-weight:800;letter-spacing:-.02em;line-height:1.15}
+h3{font-size:17px;font-weight:700}
+p{margin:0}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.wordmark{font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--accent-ink)}
+.lede{max-width:62ch;margin-top:10px;color:var(--body)}
+button{font:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,.zone:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+a{color:var(--accent-ink)}
+
+/* top summary */
+.top{display:grid;grid-template-columns:1.3fr 1fr;gap:24px;align-items:end;margin-top:6px}
+.prog{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.prog .row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.prog .big{font-family:var(--mono);font-size:30px;font-weight:600;color:var(--ink)}
+.bar{height:10px;border-radius:99px;background:var(--line);margin-top:10px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent);border-radius:99px;transition:width .3s}
+.prog small{display:block;margin-top:8px;color:var(--muted);font-size:13.5px}
+
+/* plan timeline */
+.plan{margin-top:24px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.slot{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:4px}
+.slot .t{font-family:var(--mono);font-size:12.5px;color:var(--accent-ink);font-weight:600}
+.slot b{color:var(--ink);font-size:15px}
+.slot span{font-size:13.5px;color:var(--muted)}
+.slot:hover{border-color:var(--accent)}
+
+/* layout */
+.grid{display:grid;grid-template-columns:210px 1fr;gap:32px;margin-top:36px;align-items:start}
+.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);display:flex;flex-direction:column;gap:4px}
+.rail a{display:flex;gap:10px;align-items:center;padding:8px 10px;border-radius:8px;text-decoration:none;color:var(--body);font-size:14.5px}
+.rail a:hover{background:var(--panel)}
+.rail .dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-family:var(--mono);font-size:10.5px;color:var(--muted);flex:0 0 auto}
+.rail a.done .dot{background:var(--accent);border-color:var(--accent);color:#0A0B0A}
+.steps{display:flex;flex-direction:column;gap:28px;min-width:0}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:26px 26px 22px;scroll-margin-top:16px;min-width:0}
+.step .k{font-family:var(--mono);font-size:12.5px;color:var(--accent-ink);font-weight:600;letter-spacing:.06em}
+.step h2{margin-top:6px}
+.step .why{margin-top:10px;max-width:68ch}
+.analogy{margin-top:16px;display:flex;gap:14px;background:var(--accent-soft);border-radius:12px;padding:14px 16px}
+.analogy b{color:var(--ink)}
+.analogy .lbl{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent-ink);white-space:nowrap;padding-top:3px}
+.fig{margin-top:18px;overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--bg);padding:14px}
+.fig svg{display:block;width:100%;min-width:620px;height:auto}
+.fig svg text{font-family:var(--display)}
+.cap{font-size:13.5px;color:var(--muted);margin-top:8px}
+.say{margin-top:16px;border-left:3px solid var(--accent);padding:4px 0 4px 14px}
+.say .lbl{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.say p{margin-top:4px;color:var(--ink)}
+.donebtn{margin-top:20px;display:inline-flex;gap:10px;align-items:center;border:1.5px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:9px 16px;font-weight:600;font-size:14.5px}
+.donebtn .box{width:18px;height:18px;border-radius:5px;border:2px solid var(--muted);display:grid;place-items:center}
+.donebtn[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.donebtn[aria-pressed="true"] .box{background:var(--accent);border-color:var(--accent)}
+.donebtn[aria-pressed="true"] .box::after{content:"";width:8px;height:4px;border-left:2px solid #0A0B0A;border-bottom:2px solid #0A0B0A;transform:rotate(-45deg) translate(1px,-1px)}
+
+/* tables and chips */
+.tbl{margin-top:16px;overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{width:100%;border-collapse:collapse;font-size:14.5px;min-width:560px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--ink);color:var(--bg);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700}
+tr:last-child td{border-bottom:0}
+td.code{font-family:var(--mono);white-space:nowrap;color:var(--ink);font-weight:600}
+.pill{display:inline-block;white-space:nowrap;border-radius:999px;padding:1px 9px;font-size:12px;font-weight:600}
+.p-cov{background:var(--accent-soft);color:var(--accent-ink)}
+.p-par{background:var(--amber-soft);color:var(--amber)}
+.p-gap{background:var(--red-soft);color:var(--red)}
+
+/* zone explorer */
+.zone{cursor:pointer}
+.zone rect{stroke:var(--line);stroke-width:1.5}
+.zone.sel rect{stroke:var(--accent);stroke-width:3}
+.info{margin-top:12px;display:grid;grid-template-columns:auto 1fr;gap:6px 16px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:15px}
+.info .h{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding-top:2px}
+.info .v{color:var(--ink)}
+
+/* FR cards */
+.frs{margin-top:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.fr{border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;background:var(--bg)}
+.fr .n{font-family:var(--mono);font-size:12.5px;color:var(--accent-ink);font-weight:600}
+.fr b{color:var(--ink)}
+.fr .ex{font-size:14px}
+.fr .row{display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--muted);margin-top:auto}
+
+/* quiz */
+.q{border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:12px;background:var(--bg)}
+.q .qt{color:var(--ink);font-weight:600}
+.opts{display:grid;gap:8px;margin-top:10px}
+.opts button{text-align:left;border:1.5px solid var(--line);background:var(--panel);color:var(--body);border-radius:10px;padding:9px 12px;font-size:15px}
+.opts button:hover{border-color:var(--muted)}
+.opts button.right{border-color:var(--accent);background:var(--accent-soft);color:var(--ink)}
+.opts button.wrong{border-color:var(--red);background:var(--red-soft)}
+.fb{margin-top:10px;font-size:14.5px}
+.fb b{color:var(--ink)}
+.score{font-family:var(--mono);color:var(--ink);font-weight:600}
+.reset{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:8px;padding:6px 12px;font-size:13.5px}
+.fine{margin-top:28px;font-size:13px;color:var(--muted);max-width:90ch}
+
+@media (max-width:900px){.grid{grid-template-columns:1fr}.rail{display:none}.top{grid-template-columns:1fr}.plan{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.plan{grid-template-columns:1fr}.step{padding:20px 16px}.analogy{flex-direction:column;gap:4px}.info{grid-template-columns:1fr}}
+@media (max-width:660px){.fig::before{content:"Swipe sideways to see the whole diagram";display:block;font-size:12.5px;color:var(--muted);margin-bottom:8px;position:sticky;left:0}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+.howto{margin:16px 0 0;padding-left:24px;display:grid;gap:8px}.howto li::marker{color:var(--accent);font-weight:700}code{font-family:var(--mono);background:var(--panel);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--ink);font-size:14px;word-break:break-word}</style></head><body><div class="wrap">
+  <div class="wordmark">Intelligent Environments</div>
+  <div class="top">
+    <div>
+      <h1>Secure Your Own Firm</h1>
+      <p class="lede">How a small-firm security audit works, and how to switch on the controls it asks for: MFA, a password manager, BitLocker, email authentication and tested backups. Nine steps. Each step ends with a fix a small firm can make the same day.</p>
+    </div>
+    <div class="prog" aria-live="polite">
+      <div class="row"><span>Your progress</span><span class="big" id="pnum">0/9</span></div>
+      <div class="bar"><i id="pbar"></i></div>
+      <small id="pnote">Saved in this browser. Start with step 1.</small>
+    </div>
+  </div>
+  <div class="plan" aria-label="90 minutes">
+    <a class="slot" href="#s1"><span class="t">0 to 25 min</span><b>Steps 1 to 3</b><span>The audit loop, evidence, never missing a date</span></a>
+    <a class="slot" href="#s4"><span class="t">25 to 50 min</span><b>Steps 4 to 6</b><span>MFA, password manager, BitLocker</span></a>
+    <a class="slot" href="#s7"><span class="t">50 to 75 min</span><b>Steps 7 and 8</b><span>Email authentication, backups</span></a>
+    <a class="slot" href="#s10"><span class="t">75 to 90 min</span><b>Step 9 and self-test</b><span>Making it a habit</span></a>
+  </div>
+  <div class="grid">
+    <nav class="rail" aria-label="Steps" id="rail"></nav>
+    <main class="steps">
+
+      <section class="step" id="s1" data-step="1" data-name="The audit loop">
+        <div class="k">STEP 1 OF 9 · THE AUDIT LOOP</div>
+        <h2>An audit is a loop, not a report</h2>
+        <p class="why">The small-firm security audit has eight moves: <b>scope</b> every company and trading name, <b>tailor</b> the 42 controls to the client, <b>gather evidence</b> before asking questions, <b>score</b> each control, <b>grade</b> its severity, <b>write one fix</b> per gap, <b>feed the fixes into the plan</b>, and <b>keep it from slipping</b>. Then it starts again next month. A report that is read once and filed changes nothing; the loop is what the client pays for.</p>
+        <div class="analogy"><span class="lbl">Think of it as</span><p>An MOT for a business. The tester does not take your word that the brakes work; he checks, writes down what fails, and you come back next year. We do it monthly, because a business changes faster than a car.</p></div>
+        <div class="fig">
+          <svg viewBox="0 0 760 230" role="img" aria-label="Audit loop: scope, tailor, evidence, score, fix, plan, keep, then repeat">
+            <g font-size="13" font-weight="700" fill="var(--ink)">
+              <rect x="20" y="30" width="150" height="48" rx="10" fill="var(--zone-it)"/><text x="34" y="59">1 Scope</text>
+              <rect x="200" y="30" width="150" height="48" rx="10" fill="var(--zone-it)"/><text x="214" y="59">2 Tailor</text>
+              <rect x="380" y="30" width="170" height="48" rx="10" fill="var(--zone-bms)"/><text x="394" y="59">3 Evidence first</text>
+              <rect x="580" y="30" width="160" height="48" rx="10" fill="var(--zone-bms)"/><text x="594" y="59">4 Score G A R</text>
+              <rect x="580" y="150" width="160" height="48" rx="10" fill="var(--zone-cctv)"/><text x="594" y="179">5 Grade severity</text>
+              <rect x="380" y="150" width="170" height="48" rx="10" fill="var(--zone-cctv)"/><text x="394" y="179">6 One fix per gap</text>
+              <rect x="200" y="150" width="150" height="48" rx="10" fill="var(--accent-soft)" stroke="var(--accent)"/><text x="214" y="179">7 Into the plan</text>
+              <rect x="20" y="150" width="150" height="48" rx="10" fill="var(--accent-soft)" stroke="var(--accent)"/><text x="34" y="179">8 Keep it</text>
+            </g>
+            <g stroke="var(--accent)" stroke-width="2.5" fill="none"><path d="M170 54h28M350 54h28M550 54h28M660 80v68M580 174h-28M380 174h-28M200 174h-28M95 148V82"/></g>
+            <text x="250" y="122" font-size="13" fill="var(--accent-ink)" font-weight="700">Re-score monthly: the loop never ends</text>
+          </svg>
+        </div>
+        <div class="info"><span class="h">First scores are low</span><span class="v">Under the evidence rule most small firms start well under 50%. That is the honest starting line, and the monthly re-score shows the climb.</span><span class="h">Why audit ourselves first</span><span class="v">We sell this. A client will ask what we found in our own firm. "We run it on our own firm every month" is the answer.</span></div>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"Our audit is a monthly loop: evidence first, every gap gets one fix and a date, and we re-score so you can see the reds going down."</p></div>
+        <button class="donebtn" data-done="1" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <section class="step" id="s2" data-step="2" data-name="Evidence beats promises">
+        <div class="k">STEP 2 OF 9 · EVIDENCE BEATS PROMISES</div>
+        <h2>Green means "I can show you", not "I think so"</h2>
+        <p class="why">Each control gets one of four scores. <b>G</b>: evidenced and current. <b>A</b>: partly evidenced, or true only on the owner's word. <b>R</b>: no evidence, failed or overdue. <b>NA</b>: does not apply to this client. The hard rule: an owner's statement on its own never scores green. So a laptop that is encrypted but has no screenshot on file scores amber.</p>
+        <div class="analogy"><span class="lbl">Think of it as</span><p>A gas safety certificate. The landlord saying "the boiler is fine" is not enough for the tenant or the insurer; the dated certificate is.</p></div>
+        <div class="fig">
+          <svg viewBox="0 0 760 170" role="img" aria-label="Three scores with examples">
+            <g font-size="13" fill="var(--ink)">
+              <rect x="20" y="20" width="230" height="130" rx="12" fill="var(--accent-soft)" stroke="var(--accent)"/>
+              <text x="36" y="48" font-size="20" font-weight="800" fill="var(--accent-ink)">G</text><text x="62" y="47" font-weight="700">Evidenced</text>
+              <text x="36" y="78">UK VAT number on the terms</text><text x="36" y="100">Hiscox certificate on file</text><text x="36" y="122">Document register up to date</text>
+              <rect x="265" y="20" width="230" height="130" rx="12" fill="var(--amber-soft)" stroke="var(--amber)"/>
+              <text x="281" y="48" font-size="20" font-weight="800" fill="var(--amber)">A</text><text x="307" y="47" font-weight="700">Partial or owner's word</text>
+              <text x="281" y="78">BitLocker on, no screenshot</text><text x="281" y="100">Backup copy, never restored</text><text x="281" y="122">Licence renewed after a lapse</text>
+              <rect x="510" y="20" width="230" height="130" rx="12" fill="var(--red-soft)" stroke="var(--red)"/>
+              <text x="526" y="48" font-size="20" font-weight="800" fill="var(--red)">R</text><text x="552" y="47" font-weight="700">None, failed, overdue</text>
+              <text x="526" y="78">No DMARC on the main domain</text><text x="526" y="100">Accounts past their due date</text><text x="526" y="122">No password manager</text>
+            </g>
+          </svg>
+        </div>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"If you can't show it, we score it red. That's not harsh, it's what your auditor or your bank will do."</p></div>
+        <button class="donebtn" data-done="2" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <section class="step" id="s3" data-step="3" data-name="Never miss a date">
+        <div class="k">STEP 3 OF 9 · NEVER MISS A DATE</div>
+        <h2>The Renewal Register: every date, three warnings</h2>
+        <p class="why">In founder-led firms the failures that hurt first are usually missed dates: a lapsed trade licence, late accounts leading to a strike-off notice, an insurance policy that quietly expired. None is hard. Each was simply not on a list with a warning. The Renewal Register holds every legal and commercial date with a <b>lead time</b> (how long the renewal takes) and works out the <b>start-by date</b>. Its status turns amber at 60 days, red at 30, and overdue after the date.</p>
+        <div class="analogy"><span class="lbl">Think of it as</span><p>The DVLA reminder for car tax, but for everything: licence, visa, accounts, tax, insurance, domains, certificates.</p></div>
+        <div class="fig">
+          <svg viewBox="0 0 760 150" role="img" aria-label="Timeline with reminders at 60, 30 and 7 days before the due date">
+            <line x1="40" y1="80" x2="720" y2="80" stroke="var(--line)" stroke-width="6"/>
+            <rect x="40" y="74" width="260" height="12" fill="var(--accent)"/><rect x="300" y="74" width="230" height="12" fill="var(--amber)"/><rect x="530" y="74" width="160" height="12" fill="var(--red)"/>
+            <g font-size="13" fill="var(--ink)" font-weight="700">
+              <circle cx="300" cy="80" r="9" fill="var(--amber)"/><text x="262" y="56">60 days</text>
+              <circle cx="530" cy="80" r="9" fill="var(--red)"/><text x="496" y="56">30 days</text>
+              <circle cx="640" cy="80" r="9" fill="var(--red)"/><text x="612" y="56">7 days</text>
+              <rect x="682" y="64" width="40" height="32" rx="6" fill="var(--ink)"/><text x="666" y="120">Due date</text>
+            </g>
+            <text x="44" y="118" font-size="13" fill="var(--body)">OK</text><text x="330" y="118" font-size="13" fill="var(--body)">AMBER: start now</text><text x="520" y="118" font-size="13" fill="var(--body)">RED: takes the daily block</text>
+          </svg>
+        </div>
+        <ol class="howto">
+          <li>Open the audit workbook, Renewal Register sheet, and list every date: licence, visas, accounts, confirmation statement, tax returns, insurance, domains, certificates.</li>
+          <li>Any line without a date shows DATE MISSING. Find the date; that search is often where the gap is found.</li>
+          <li>Approve the dates, then each one gets calendar reminders at 60, 30 and 7 days.</li>
+          <li>Rule: any line that is RED and not started takes a fixed daily block until it is done.</li>
+        </ol>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"Most small firms don't fail on security, they fail on dates. Every date goes on one register with three warnings."</p></div>
+        <button class="donebtn" data-done="3" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <section class="step" id="s4" data-step="4" data-name="MFA">
+        <div class="k">STEP 4 OF 9 · MULTI-FACTOR AUTHENTICATION</div>
+        <h2>MFA: a stolen password alone is no longer enough</h2>
+        <p class="why">MFA asks for two different things: something you <b>know</b> (the password) and something you <b>have</b> (your phone's authenticator app, or a hardware key). Passwords leak all the time; the second factor stops the thief at the door. Use an authenticator app or a key, not SMS, where the service allows it, because SMS can be redirected by SIM-swap fraud.</p>
+        <div class="analogy"><span class="lbl">Think of it as</span><p>A bank card and PIN. Someone who learns your PIN still needs the card in their hand.</p></div>
+        <div class="fig">
+          <svg viewBox="0 0 760 140" role="img" aria-label="Password plus phone code gives access; password alone is blocked">
+            <g font-size="13" font-weight="700" fill="var(--ink)">
+              <rect x="20" y="20" width="150" height="40" rx="8" fill="var(--zone-it)"/><text x="34" y="45">Password</text>
+              <rect x="20" y="80" width="150" height="40" rx="8" fill="var(--zone-bms)"/><text x="34" y="105">Code from phone</text>
+              <rect x="300" y="50" width="160" height="40" rx="8" fill="var(--accent-soft)" stroke="var(--accent)"/><text x="316" y="75">Both: you're in</text>
+              <rect x="560" y="20" width="180" height="40" rx="8" fill="var(--zone-it)"/><text x="574" y="45">Stolen password only</text>
+              <rect x="560" y="80" width="180" height="40" rx="8" fill="var(--red-soft)" stroke="var(--red)"/><text x="574" y="105">Blocked</text>
+            </g>
+            <g stroke="var(--accent)" stroke-width="2.5"><line x1="170" y1="40" x2="298" y2="66"/><line x1="170" y1="100" x2="298" y2="74"/></g>
+            <line x1="650" y1="60" x2="650" y2="78" stroke="var(--red)" stroke-width="2.5"/>
+          </svg>
+        </div>
+        <ol class="howto">
+          <li><b>Google Workspace (your mailbox):</b> admin.google.com, Security, Authentication, 2-step verification. Tick "Allow users to turn on 2-step verification", set Enforcement to On, save. Then on your own account: myaccount.google.com, Security, 2-Step Verification, add Google Authenticator or a passkey.</li>
+          <li><b>Every other account:</b> list them first (free zone or company registry portals, banks, accounting, code hosting, social profiles, AI tools, domain registrar, DNS host, tax portals). Open each one's security settings and turn on the authenticator option.</li>
+          <li><b>Save the recovery codes</b> each service gives you into the password manager (step 5), never in email or on the desktop.</li>
+          <li><b>Evidence:</b> one line per account in the account list: service, MFA method, date switched on.</li>
+        </ol>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"Every account that touches company or client data has MFA with an authenticator app, and I can show you the list."</p></div>
+        <button class="donebtn" data-done="4" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <section class="step" id="s5" data-step="5" data-name="Password manager">
+        <div class="k">STEP 5 OF 9 · PASSWORD MANAGER</div>
+        <h2>One strong master password; a different password everywhere else</h2>
+        <p class="why">A password manager makes and remembers a long, unique password for every site, fills it in for you, and keeps MFA recovery codes safe. You remember one long passphrase. A common audit finding is a portal password reset by a supplier and sent in an ordinary email: that is the problem a manager removes, because nothing needs to be typed, remembered or emailed.</p>
+        <div class="analogy"><span class="lbl">Think of it as</span><p>A key safe by the door. Every key is different, and you only carry the one code that opens the safe.</p></div>
+        <ol class="howto">
+          <li>Pick one business-grade manager (for example Bitwarden or 1Password). Business plans cost a few dollars a user a month [guessing on current prices; check before buying].</li>
+          <li>Choose the master passphrase: four or five unrelated words, at least 20 characters. Write it once on paper, kept at home in a safe place, never photographed.</li>
+          <li>Turn on MFA for the password manager itself.</li>
+          <li>Install the browser extension and the phone app. Move every account in, changing each password to a generated one as you go. Start with email, banking, the registry portal and the domain registrar.</li>
+          <li>Store each service's MFA recovery codes and the BitLocker recovery key (step 6) as secure notes.</li>
+          <li>Evidence: a screenshot of the vault's item count and the security report showing no reused passwords.</li>
+        </ol>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"No one in our firm knows or reuses a password; they are generated and held in a managed vault with MFA."</p></div>
+        <button class="donebtn" data-done="5" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <section class="step" id="s6" data-step="6" data-name="BitLocker">
+        <div class="k">STEP 6 OF 9 · BITLOCKER AND DEVICE PROTECTION</div>
+        <h2>BitLocker: a lost laptop becomes a lost piece of hardware, not a data breach</h2>
+        <p class="why">BitLocker encrypts the whole Windows drive. The key is held in a chip on the motherboard (the TPM) and released only when Windows starts normally. If the laptop is stolen and the drive is pulled out, the data on it is unreadable. The one thing you must keep safe is the <b>recovery key</b>, a 48-digit number Windows asks for if the hardware changes. Lose it and you lose your own data.</p>
+        <div class="analogy"><span class="lbl">Think of it as</span><p>A safe bolted inside the car. A thief can take the car, but not open the safe; and the spare safe key lives at home, not in the glovebox.</p></div>
+        <div class="fig">
+          <svg viewBox="0 0 760 160" role="img" aria-label="Without BitLocker the stolen drive is readable; with BitLocker it is scrambled">
+            <g font-size="13" font-weight="700" fill="var(--ink)">
+              <rect x="20" y="20" width="330" height="120" rx="12" fill="var(--red-soft)" stroke="var(--red)"/><text x="36" y="46">Without BitLocker</text>
+              <text x="36" y="76" font-weight="400" fill="var(--body)">Thief removes the drive,</text><text x="36" y="96" font-weight="400" fill="var(--body)">plugs it into another PC,</text><text x="36" y="116" font-weight="400" fill="var(--body)">reads every client file.</text>
+              <rect x="410" y="20" width="330" height="120" rx="12" fill="var(--accent-soft)" stroke="var(--accent)"/><text x="426" y="46">With BitLocker</text>
+              <text x="426" y="76" font-weight="400" fill="var(--body)">Same theft. The drive shows</text><text x="426" y="96" font-weight="400" fill="var(--body)">only scrambled data. Recovery</text><text x="426" y="116" font-weight="400" fill="var(--body)">key is in your password vault.</text>
+            </g>
+          </svg>
+        </div>
+        <ol class="howto">
+          <li><b>Check your Windows edition:</b> Settings, System, About. Windows 11 Pro has full BitLocker. Windows 11 Home has "Device encryption" on supported hardware, which uses the same technology.</li>
+          <li><b>Pro:</b> Start, type "Manage BitLocker", open it, choose "Turn on BitLocker" for drive C:. <b>Home:</b> Settings, Privacy and security, Device encryption, switch On.</li>
+          <li><b>Back up the recovery key:</b> choose "Save to your Microsoft account" or "Save to a file" (save the file to a USB stick, copy the number into the password manager, then delete the file from the stick). Never keep it only on the laptop itself.</li>
+          <li>Choose "Encrypt entire drive" and "New encryption mode" when asked. Let it finish; you can keep working.</li>
+          <li><b>Prove it:</b> right-click Start, Terminal (Admin), run <code>manage-bde -status C:</code>. You want "Protection On" and "Percentage Encrypted: 100%". Screenshot it for the evidence file.</li>
+          <li><b>Same session, two more checks:</b> Windows Security, Virus and threat protection: "No actions needed". Settings, Windows Update: automatic updates on. Phone: Settings shows a passcode set (modern iPhones and Android phones encrypt automatically once a passcode is on). Screenshot each.</li>
+        </ol>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"Every device is encrypted with BitLocker, patched and running Defender; the recovery keys are held separately in our vault, and I have the status screenshots."</p></div>
+        <button class="donebtn" data-done="6" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <section class="step" id="s7" data-step="7" data-name="Email authentication">
+        <div class="k">STEP 7 OF 9 · SPF, DKIM AND DMARC</div>
+        <h2>Stop anyone sending email that looks like it came from you</h2>
+        <p class="why">Three DNS records protect a domain. <b>SPF</b> lists the servers allowed to send your mail. <b>DKIM</b> adds a digital signature to every message. <b>DMARC</b> tells receiving mail servers what to do when a message fails both: nothing (<code>p=none</code>, just report), put it in spam (<code>quarantine</code>), or refuse it (<code>reject</code>). A domain with SPF but no DKIM and no DMARC lets anyone send a convincing invoice "from" you to a client. It is one of the commonest gaps in small firms.</p>
+        <div class="analogy"><span class="lbl">Think of it as</span><p>SPF is the list of approved couriers, DKIM is the wax seal on the letter, and DMARC is your instruction to the post office: "if the seal is broken, bin it".</p></div>
+        <div class="fig">
+          <svg viewBox="0 0 760 150" role="img" aria-label="DMARC rollout: none, then quarantine, then reject">
+            <g font-size="13" font-weight="700" fill="var(--ink)">
+              <rect x="20" y="40" width="220" height="70" rx="10" fill="var(--zone-it)"/><text x="36" y="68">Week 1: p=none</text><text x="36" y="92" font-weight="400" fill="var(--body)">Watch reports, fix senders</text>
+              <rect x="270" y="40" width="220" height="70" rx="10" fill="var(--amber-soft)" stroke="var(--amber)"/><text x="286" y="68">Week 5: quarantine</text><text x="286" y="92" font-weight="400" fill="var(--body)">Fakes go to spam</text>
+              <rect x="520" y="40" width="220" height="70" rx="10" fill="var(--accent-soft)" stroke="var(--accent)"/><text x="536" y="68">Week 9: reject</text><text x="536" y="92" font-weight="400" fill="var(--body)">Fakes are refused</text>
+            </g>
+            <g stroke="var(--accent)" stroke-width="2.5"><line x1="240" y1="75" x2="268" y2="75"/><line x1="490" y1="75" x2="518" y2="75"/></g>
+          </svg>
+        </div>
+        <ol class="howto">
+          <li><b>DKIM in Google Workspace:</b> admin.google.com, Apps, Google Workspace, Gmail, Authenticate email. Select the domain, Generate new record (2048-bit, selector "google"). Copy the TXT value.</li>
+          <li><b>Add it in DNS</b> at your DNS host: open the domain's DNS settings and Add new record: type TXT, name <code>google._domainkey</code>, value as copied. Wait up to an hour, then press "Start authentication" in Google.</li>
+          <li><b>DMARC:</b> add TXT, name <code>_dmarc</code>, value <code>v=DMARC1; p=none; rua=mailto:dmarc@yourdomain.com</code>. Reports arrive daily; once only Google appears as a sender, move to quarantine, then reject.</li>
+          <li><b>Domains that do not send mail</b> (old brands, parked domains): TXT at the root <code>v=spf1 -all</code> and <code>_dmarc</code> = <code>v=DMARC1; p=reject;</code>. That tells the world no genuine mail ever comes from it.</li>
+          <li><b>Check:</b> use any public DMARC checker, or the dns.google lookup, and screenshot the result for every domain you own, sending or not.</li>
+        </ol>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"Our domains publish SPF, DKIM and an enforced DMARC policy, so nobody can impersonate us to our clients, and we check yours in the first hour of an audit."</p></div>
+        <button class="donebtn" data-done="7" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <section class="step" id="s8" data-step="8" data-name="Backups that restore">
+        <div class="k">STEP 8 OF 9 · BACKUPS THAT RESTORE</div>
+        <h2>A backup only counts once you have restored from it</h2>
+        <p class="why">The rule of thumb is <b>3-2-1</b>: three copies of your data, on two different kinds of storage, with one kept away from the working device. OneDrive is sync, not a full backup: if ransomware encrypts a file, sync can copy the damage. Your second copy fixes that only if it is encrypted, not permanently connected, and you have proved you can get a file back.</p>
+        <div class="analogy"><span class="lbl">Think of it as</span><p>A fire drill. Nobody knows if the exits work until you walk out through them.</p></div>
+        <ol class="howto">
+          <li>Once a quarter, pick one real file from the second copy (for example the latest register workbook).</li>
+          <li>Restore it to a test folder, open it, and check that it is the right version and opens cleanly.</li>
+          <li>Record date, file, source, time taken and result in the backup log. Delete the test copy.</li>
+          <li>If it fails, that is an incident (log it) and the fix goes on the Renewal Register.</li>
+        </ol>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"We keep an independent, encrypted copy and we prove a restore every quarter; the log is your evidence."</p></div>
+        <button class="donebtn" data-done="8" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <section class="step" id="s9" data-step="9" data-name="Make it a habit">
+        <div class="k">STEP 9 OF 9 · MAKE IT A HABIT</div>
+        <h2>Six small habits stop it slipping</h2>
+        <p class="why">Controls decay. What keeps them alive is a rhythm that does not depend on remembering: (1) the Renewal Register; (2) calendar reminders at 60, 30 and 7 days; (3) a daily start-of-day check naming anything amber or red; (4) one line in the weekly scorecard, reds open and reds closed; (5) the escalation rule, where a red date takes a fixed daily block; (6) a monthly re-score on the first Friday, with statutory filings handed to one accountant so they never depend on you alone.</p>
+        <div class="analogy"><span class="lbl">Think of it as</span><p>Brushing your teeth. Nobody needs willpower for it, because it is tied to a time of day.</p></div>
+        <div class="info"><span class="h">For clients</span><span class="v">The same six habits are part of the audit product. The client gets the register, the reminders and a monthly re-score from us.</span><span class="h">For your own firm</span><span class="v">Set the first re-score date before you close the audit. A sensible first target: no Critical reds within 30 days.</span></div>
+        <div class="say"><div class="lbl">Say it in one line</div><p>"The audit doesn't end with a report: a register, reminders and a monthly re-score keep every control alive."</p></div>
+        <button class="donebtn" data-done="9" aria-pressed="false"><span class="box"></span>I can explain this</button>
+      </section>
+
+      <section class="step" id="s10">
+        <div class="k">SELF-TEST · 8 QUESTIONS</div>
+        <h2>Check yourself</h2>
+        <p style="margin-top:12px">Score: <span class="score" id="qscore">0</span> <button class="reset" id="qreset" type="button">Reset answers</button></p>
+        <div id="quiz"></div>
+      </section>
+      <p class="fine">Menu paths are for Windows 11 and the Google Admin console as of November 2026; vendors move menus, so check their help pages if a label differs. Method: the SME security audit toolkit. Built with Polly, my AI assistant, as a study aid; checked by a person.</p>
+    </main>
+  </div>
+</div>
+<script>
+(function(){
+  var KEY='secure-your-own-firm.v1', st={done:{},quiz:{}}, QS=[["Your client says 'yes, our laptops are encrypted' but cannot show a screenshot. How do you score it?", ["G, because they said so", "A, true on the owner's word only", "NA", "Skip the control"], 1, "Owner statements alone never score green. Amber until the evidence is on file."], ["In founder-led firms, which failures usually hurt first?", ["Hackers", "Missed statutory dates with no reminder system", "Bad software", "Staff mistakes"], 1, "Lapsed licences, late accounts and expired insurance are all missed dates. The Renewal Register fixes that."], ["A Renewal Register line turns RED. What happens?", ["Nothing until the date", "It takes a fixed daily block until it is done", "It moves to next month", "It is deleted"], 1, "The escalation rule: inside 30 days and not started means it takes a fixed daily block."], ["Which second factor is weakest?", ["Hardware key", "Authenticator app", "SMS code", "Passkey"], 2, "SMS can be redirected by SIM-swap fraud. Use an app or a key where the service allows it."], ["Where should the BitLocker recovery key be kept?", ["On the laptop desktop", "In an email to yourself", "In the password manager, away from the laptop", "Nowhere, it is not needed"], 2, "If the key only lives on the encrypted laptop, a hardware fault locks you out of your own data."], ["Which command proves BitLocker is on?", ["ipconfig", "manage-bde -status C:", "ping", "whoami"], 1, "Run it in an admin terminal: you want Protection On and 100% encrypted. Screenshot it as evidence."], ["Which record tells receiving servers to refuse fake mail from your domain?", ["SPF", "DKIM", "DMARC with p=reject", "MX"], 2, "SPF lists senders, DKIM signs messages, DMARC sets the policy. Move from none to quarantine to reject."], ["When does a backup count as a control?", ["When it is set up", "When you pay for it", "When a restore has been tested and logged", "When OneDrive syncs"], 2, "Restore one real file each quarter and log the result. Sync is not a backup."]];
+  try{var raw=localStorage.getItem(KEY); if(raw){var p=JSON.parse(raw); if(p&&p.done) st=p; if(!st.quiz) st.quiz={};}}catch(e){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
+  var secs=[].slice.call(document.querySelectorAll('section[data-step]')), N=secs.length, names=secs.map(function(s){return s.dataset.name;});
+  var rail=document.getElementById('rail');
+  names.forEach(function(n,i){var a=document.createElement('a');a.href='#s'+(i+1);a.dataset.s=i+1;a.innerHTML='<span class="dot">'+(i+1)+'</span>'+n;rail.appendChild(a);});
+  var q=document.createElement('a');q.href='#s10';q.innerHTML='<span class="dot">?</span>Self-test';rail.appendChild(q);
+  function render(){
+    var n=0; for(var i=1;i<=N;i++){ if(st.done[i]) n++; }
+    document.getElementById('pnum').textContent=n+'/'+N;
+    document.getElementById('pbar').style.width=(n/N*100)+'%';
+    var next=0; for(var j=1;j<=N;j++){ if(!st.done[j]){next=j;break;} }
+    document.getElementById('pnote').textContent= n===N ? 'All steps done. Finish with the self-test.' : 'Saved in this browser. Next: step '+next+', '+names[next-1]+'.';
+    document.querySelectorAll('.donebtn').forEach(function(b){b.setAttribute('aria-pressed',st.done[b.dataset.done]?'true':'false');});
+    rail.querySelectorAll('a[data-s]').forEach(function(a){a.classList.toggle('done',!!st.done[a.dataset.s]);});
+  }
+  document.querySelectorAll('.donebtn').forEach(function(b){b.addEventListener('click',function(){var k=b.dataset.done; st.done[k]=!st.done[k]; save(); render();});});
+  var quiz=document.getElementById('quiz');
+  function renderQuiz(){
+    var sc=0;
+    quiz.innerHTML=QS.map(function(qq,i){
+      var a=st.quiz[i]; if(a===qq[2]) sc++;
+      var opts=qq[1].map(function(o,j){var c=''; if(a!==undefined){ if(j===qq[2]) c='right'; else if(j===a) c='wrong'; } return '<button type="button" class="'+c+'" data-q="'+i+'" data-a="'+j+'">'+o+'</button>';}).join('');
+      var fb=a===undefined?'':'<p class="fb"><b>'+(a===qq[2]?'Right.':'Not quite.')+'</b> '+qq[3]+'</p>';
+      return '<div class="q"><p class="qt">'+(i+1)+'. '+qq[0]+'</p><div class="opts">'+opts+'</div>'+fb+'</div>';
+    }).join('');
+    document.getElementById('qscore').textContent=sc+' / '+QS.length;
+  }
+  quiz.addEventListener('click',function(e){var b=e.target.closest('button[data-q]'); if(!b) return; var i=+b.dataset.q; if(st.quiz[i]!==undefined) return; st.quiz[i]=+b.dataset.a; save(); renderQuiz();});
+  document.getElementById('qreset').addEventListener('click',function(){st.quiz={}; save(); renderQuiz();});
+  render(); renderQuiz();
+})();
+</script></body></html>

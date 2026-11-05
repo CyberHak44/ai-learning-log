@@ -23,6 +23,8 @@ Each subject is a working paper. I take a position, Polly, my AI assistant, chal
 | [AI as a force multiplier](topics/04-ai-as-a-force-multiplier.md) | Where does AI really let one person do the work of several? | Framework |
 | [AI governance frameworks](topics/05-ai-governance-frameworks.md) | ISO/IEC 42001, NIST AI RMF, the EU AI Act and CBUAE guidance, and how they fit with ISO 27001 | Round 1 started |
 | [AI and privacy](topics/06-ai-and-privacy.md) | With microphones in cars, phones and rooms, how is privacy protected, and where does it stop? | Round 1 started |
+| [Auditing a small firm](topics/07-auditing-a-small-firm.md) | How do you audit a founder-led firm honestly, and stop the fixes slipping? | Round 1 done |
+| [To BitLocker or not](topics/08-to-bitlocker-or-not.md) | Single-user, shared, or a work laptop the kids use: what does encryption actually protect, and when does locking down backfire? | Round 1 drafted |
 
 ## Dashboards I've built
 
@@ -34,6 +36,7 @@ Interactive study pages with diagrams and self-tests. Click to open them live in
 | [Fortinet FortiGate essentials](https://cyberhak44.github.io/ai-learning-log/dashboards/fortinet-nse4-study.html) | Policies, NAT, security profiles, SSL inspection, IPsec VPN, hardening |
 | [Docker, Gordon and local AI](https://cyberhak44.github.io/ai-learning-log/dashboards/docker-gordon-study.html) | Containers, Compose, the MCP Toolkit, running AI models locally |
 | [Web data and the law](https://cyberhak44.github.io/ai-learning-log/dashboards/web-data-study.html) | Proxies, scraping APIs, brand look-alike monitoring, the UAE PDPL line |
+| [Secure your own firm](https://cyberhak44.github.io/ai-learning-log/dashboards/secure-your-own-firm.html) | The audit loop, a renewal register, MFA, password managers, BitLocker, SPF, DKIM and DMARC, tested backups |
 
 Also built: [grc-workbench](https://github.com/CyberHak44/grc-workbench), a browser-based GRC tool. More detail in [dashboards](dashboards/README.md).
 
@@ -66,3 +69,4 @@ Working drafts that turn these subjects into documents a client could use, each 
 ## Author
 
 **Clive (Hakim) Bean**: ISO/IEC 27001 Lead Auditor (GRC Mastery, 2026, Credly-verified). Intelligent Environments L.L.C-FZ, Abu Dhabi.
+| 2026-11-05 | Auditing a small firm | Evidence beats promises: an owner's word never scores green. In founder-led firms, missed dates do more damage than attackers, so a renewal register with 60, 30 and 7-day warnings is control number one | [sme-security-audit-toolkit](https://github.com/CyberHak44/sme-security-audit-toolkit) |
