@@ -25,6 +25,7 @@ Each subject is a working paper. I take a position, Polly, my AI assistant, chal
 | [AI and privacy](topics/06-ai-and-privacy.md) | With microphones in cars, phones and rooms, how is privacy protected, and where does it stop? | Round 1 started |
 | [Auditing a small firm](topics/07-auditing-a-small-firm.md) | How do you audit a founder-led firm honestly, and stop the fixes slipping? | Round 1 done |
 | [To BitLocker or not](topics/08-to-bitlocker-or-not.md) | Single-user, shared, or a work laptop the kids use: what does encryption actually protect, and when does locking down backfire? | Round 1 drafted |
+| [Operational resilience: field notes](topics/09-operational-resilience-field-notes.md) | What are UAE bank security leaders worried about after March 2026, and what is the minimum a firm must keep running? | Round 1 drafted |
 
 ## Dashboards I've built
 
@@ -65,8 +66,9 @@ Working drafts that turn these subjects into documents a client could use, each 
 | 2026-11-03 | AI guardrails and agentic AI | Started five working papers: guardrails, human oversight of AI agents, the main AI tools, AI as a force multiplier, and AI governance frameworks | [topics](topics/) |
 | 2026-11-03 | AI guardrails, round 1 | Authorisation beats content filtering; AI preps, people act. Jurisdiction follows where people are and where you trade, not nationality | [01-ai-guardrails](topics/01-ai-guardrails.md) |
 | 2026-11-04 | Zero trust, speed and privacy | Zero trust is not zero autonomy; the risk is complacency. Liability, procurement and insurance make insecurity cost more than being second. Control capture and retention, not speech | [01](topics/01-ai-guardrails.md), [05](topics/05-ai-governance-frameworks.md), [06](topics/06-ai-and-privacy.md) |
+| 2026-11-05 | Auditing a small firm | Evidence beats promises: an owner's word never scores green. In founder-led firms, missed dates do more damage than attackers, so a renewal register with 60, 30 and 7-day warnings is control number one | [sme-security-audit-toolkit](https://github.com/CyberHak44/sme-security-audit-toolkit) |
+| 2026-11-10 | Operational resilience, banking forum | Attackers log in rather than break in; documented resilience is not actual resilience; write down the minimum viable company before an incident, in restore order | [09](topics/09-operational-resilience-field-notes.md) |
 
 ## Author
 
 **Clive (Hakim) Bean**: ISO/IEC 27001 Lead Auditor (GRC Mastery, 2026, Credly-verified). Intelligent Environments L.L.C-FZ, Abu Dhabi.
-| 2026-11-05 | Auditing a small firm | Evidence beats promises: an owner's word never scores green. In founder-led firms, missed dates do more damage than attackers, so a renewal register with 60, 30 and 7-day warnings is control number one | [sme-security-audit-toolkit](https://github.com/CyberHak44/sme-security-audit-toolkit) |
